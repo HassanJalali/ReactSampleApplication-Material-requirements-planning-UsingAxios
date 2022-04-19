@@ -1,0 +1,8 @@
+#formGroupExampleInput {
+  width: 30% !important;
+  display: inline-block;
+}
+#lblForProductionLineNameFilter {
+  color: grey;
+  display: inline-block;
+}
