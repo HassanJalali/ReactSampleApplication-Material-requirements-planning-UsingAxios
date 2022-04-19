@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductionLineProduct = () => {
   const [productionLines, setProductionLines] = useState([]);
@@ -23,6 +24,16 @@ const ProductionLineProduct = () => {
     loadProductionLine();
   };
 
+  const deleteAssignedProduction = async (id) => {
+    var res = await axios.delete(
+      `https://localhost:7295/api/Productions/DeleteAssignedProduction/${id}`
+    );
+    loadProductionLine();
+    if (res.status == "200") {
+      toast.success(".خط تولید با موفقیت حذف شد");
+    }
+  };
+
   return (
     <div className="container">
       <Link
@@ -40,6 +51,7 @@ const ProductionLineProduct = () => {
             <th scope="col">نام خط تولید</th>
             <th scope="col"> کد محصول</th>
             <th scope="col">فعال </th>
+            <th scope="col">عملیات </th>
           </tr>
         </thead>
         <tbody>
@@ -63,6 +75,14 @@ const ProductionLineProduct = () => {
                     htmlFor="flexSwitchCheckDefault"
                   ></label>
                 </div>
+              </td>
+              <td>
+                <a
+                  className="btn btn-danger mx-2 px-3"
+                  onClick={() => deleteAssignedProduction(x.Id)}
+                >
+                  حذف
+                </a>
               </td>
             </tr>
           ))}
