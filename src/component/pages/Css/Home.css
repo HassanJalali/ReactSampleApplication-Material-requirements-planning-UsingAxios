@@ -1,0 +1,15 @@
+#addbtn {
+  background-color: #5867dd !important;
+  color: white;
+  border-radius: 20px;
+}
+#addbtn:hover {
+  background-color: white !important;
+  border: 1px dashed #5867dd !important;
+  color: #5867dd !important;
+  border-radius: 20px;
+}
+
+table {
+  color: #c1c4d6;
+}
