@@ -81,21 +81,23 @@ const EditProductionLine = () => {
           </div>
 
           <div className="form-group">
-            <select
-              className="form-select form-control form-control-md mb-2 "
+            <input
+              list="weekday"
+              className="form-control form-control-md mb-2 "
               type="text"
               placeholder="نام مرکز تولید را وارد کنید."
               name="CostCenterName"
               value={CostCenterName}
               onChange={(e) => onInputChange(e)}
-            >
+            />
+            <datalist id="weekday">
               <option selected>{CostCenterName}</option>
               {costCenters.map((cs) => (
                 <option key={cs.Id} value={cs.Name}>
                   {cs.Name}
                 </option>
               ))}
-            </select>
+            </datalist>
           </div>
           <button className="btn btn-primary w-25 ">ویرایش </button>
           <button

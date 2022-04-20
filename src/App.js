@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function App() {
   render(
     <BrowserRouter>
-      <ToastContainer position="top-right" />
+      <ToastContainer position="top-left" />
       <div className="App">
         <Navbar />
         <Routes>

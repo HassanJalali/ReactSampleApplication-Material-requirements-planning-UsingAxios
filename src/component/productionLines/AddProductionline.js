@@ -38,10 +38,16 @@ const AddProductionline = () => {
       return toast.error(" .نام مرکز هزینه را انتخاب کنید");
     }
 
-    var res = await axios.post(
-      "https://localhost:7295/api/ProductionLines/CreateProductionLine",
-      productionLine
-    );
+    var res = await axios
+      .post(
+        "https://localhost:7295/api/ProductionLines/CreateProductionLine",
+        productionLine
+      )
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
     if (res.status == "200") {
       toast.success(".خط تولید با موفقیت ایجاد شد");
     }
@@ -71,23 +77,22 @@ const AddProductionline = () => {
           </div>
 
           <div className="form-group">
-            <select
-              className="form-select form-control form-control-md mb-2 "
+            <input
+              list="weekday"
+              className="form-control form-control-md mb-2 "
               type="text"
               placeholder="نام مرکز تولید را وارد کنید."
               name="CostCenterName"
               value={CostCenterName}
               onChange={(e) => onInputChange(e)}
-            >
-              <option style={{ display: "none" }}>
-                نام مرکز تولید را وارد کنید
-              </option>
+            />
+            <datalist id="weekday">
               {costCenters.map((cs) => (
                 <option key={cs.Id} value={cs.Name}>
                   {cs.Name}
                 </option>
               ))}
-            </select>
+            </datalist>
           </div>
 
           <button className="btn btn-primary w-25 ">ثبت</button>
