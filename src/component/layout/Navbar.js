@@ -30,6 +30,21 @@ const Navbar = () => {
                 محصولات خطوط تولید
               </NavLink>
             </li>
+            <li className="nav-item active">
+              <NavLink className="nav-link" to="workstationHome">
+                ایستگاه کاری
+              </NavLink>
+            </li>
+            <li className="nav-item active">
+              <NavLink className="nav-link" to="AssignWorkstationHome">
+                ایستگاه کاری خطوط تولید
+              </NavLink>
+            </li>
+            <li className="nav-item active">
+              <NavLink className="nav-link" to="productionheader">
+                سربرگ محصول
+              </NavLink>
+            </li>
           </ul>
         </div>
         <NavLink className="navbar-brand" to="/">

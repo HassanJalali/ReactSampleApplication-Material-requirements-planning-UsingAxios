@@ -25,7 +25,7 @@ const Home = () => {
     );
     loadProductionLine();
     if (res.status == "200") {
-      toast.success(".خط تولید با موفقیت حذف شد");
+      toast.success("خط تولید با موفقیت حذف شد.");
     }
   };
 
@@ -42,7 +42,7 @@ const Home = () => {
         ایجاد خط تولید
       </Link>
 
-      <table className="table table-bordered mt-3 table-hover">
+      <table className="table table-bordered mt-3 table-hover text-center">
         <thead>
           <tr>
             <th scope="col">#</th>

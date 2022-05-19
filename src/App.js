@@ -10,12 +10,24 @@ import EditProductionLine from "./component/productionLines/EditProductionLine";
 import ProductionLineProduct from "./component/production/ProductionLineProduct";
 import AssignProductToProductionLine from "./component/production/AssignProductToProductionLine";
 import { ToastContainer } from "react-toastify";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
+import WorkStation from "./component/Workstation/Workstation";
+import AddWorkstation from "./component/Workstation/AddWorkstation";
+import AssignWorkstationHome from "./component/productionLines/AssignWorkstationHome";
+import AssignWorkstationToProductionLine from "./component/productionLines/AssignWorkstationToProductionLine";
+import ProductionHeader from "./component/productionLines/ProductionHeader";
+import AddProductionHeader from "./component/productionLines/AddProductionHeader";
+import AssignProductionCost from "./component/productionLines/AssignProductionCost";
 
 export default function App() {
   render(
     <BrowserRouter>
-      <ToastContainer position="top-left" />
+      <ToastContainer
+        rtl
+        position="top-left"
+        style={{ width: 520, fontSize: 15 }}
+      />
       <div className="App">
         <Navbar />
         <Routes>
@@ -34,10 +46,36 @@ export default function App() {
             element={<AssignProductToProductionLine />}
           ></Route>
 
+          <Route path="/workstationHome" element={<WorkStation />}></Route>
+
           <Route
             path="/productionLineProduct"
             element={<ProductionLineProduct />}
           ></Route>
+
+          <Route path="/workstation/add" element={<AddWorkstation />}></Route>
+          <Route
+            path="/AssignWorkstation/add"
+            element={<AssignWorkstationToProductionLine />}
+          ></Route>
+          <Route
+            path="/AssignWorkstationHome"
+            element={<AssignWorkstationHome />}
+          ></Route>
+          <Route
+            path="/productionheader"
+            element={<ProductionHeader />}
+          ></Route>
+          <Route
+            path="/productionheader/add"
+            element={<AddProductionHeader />}
+          ></Route>
+
+          <Route
+            path="/assignproductioncost"
+            element={<AssignProductionCost />}
+          ></Route>
+
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>

@@ -4,12 +4,16 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./Css/ProductionLineProduct.css";
+import AssignProductionCost from "../productionLines/AssignProductionCost";
 
 const ProductionLineProduct = () => {
   let navigate = useNavigate();
   const [productionLines, setProductionLines] = useState([]);
   const [productionLineName, setProductionLineName] = useState({
     ProductionLineName: "",
+  });
+  const [productionName, setProductionName] = useState({
+    ProductionName: "",
   });
 
   const { ProductionLineName } = productionLineName;
@@ -20,45 +24,55 @@ const ProductionLineProduct = () => {
     });
   };
 
+  const { ProductionName } = productionName;
+  const onProductionNameChange = (e) => {
+    setProductionName({
+      ...productionName,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   useEffect(() => {
-    // if (!productionLineName.ProductionLineName == "") {
-    //   getAssignedProductionByProductionLineName();
-    // }
-    // if (productionLineName.ProductionLineName == "") {
-    //   navigate("/productionLineProduct");
-    //   loadProductionLine();
-    // }
     loadProductionLine();
   }, []);
 
   const loadProductionLine = async () => {
     const result = await axios.get(
-      "https://localhost:7295/api/Productions/GetAssignedProduction"
+      "https://localhost:7295/api/ProductionLines/GetAssignedProduction"
     );
     setProductionLines(result.data);
+    setProductionLineName({ ProductionLineName: "" });
+    setProductionName({ ProductionName: "" });
   };
 
   const getAssignedProductionByProductionLineName = async () => {
     const result = await axios.get(
-      `https://localhost:7295/api/Productions/GetAssignedProductionsByProductionLineName?productionLine=${ProductionLineName}`
+      `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionLineName?productionLineName=${ProductionLineName}`
     );
     setProductionLines(result.data);
   };
 
-  const handleActiveManagement = async (id) => {
-    await axios.put(
-      `https://localhost:7295/api/Productions/ActiveAssignedProduction/${id}`
+  const getAssignedProductionByProductionName = async () => {
+    const result = await axios.get(
+      `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionName?productionName=${ProductionName}`
+    );
+    setProductionLines(result.data);
+  };
+
+  const handleActiveManagement = async (ProductionLineId, ProductionId) => {
+    var res = await axios.put(
+      `https://localhost:7295/api/ProductionLines/ActiveAssignedProduction/${ProductionLineId}/${ProductionId}`
     );
     loadProductionLine();
   };
 
-  const deleteAssignedProduction = async (id) => {
+  const deleteAssignedProduction = async (ProductionLineId, ProductionId) => {
     var res = await axios.delete(
-      `https://localhost:7295/api/Productions/DeleteAssignedProduction/${id}`
+      `https://localhost:7295/api/ProductionLines/DeleteAssignedProduction/${ProductionLineId}/${ProductionId}`
     );
     loadProductionLine();
     if (res.status == "200") {
-      toast.success(".خط تولید با موفقیت حذف شد");
+      toast.success("محصول تخصیص داده شده با موفقیت از خط تولید حذف شد.");
     }
   };
 
@@ -72,48 +86,83 @@ const ProductionLineProduct = () => {
         تخصیص محصول به خط تولید
       </Link>
 
-      <div>
-        <label
-          htmlFor="formGroupExampleInput"
-          className="mt-3 mb-2"
-          id="lblForProductionLineNameFilter"
-        >
-          * جست وجو بر اساس نام خط تولید
-        </label>
-        <br />
-        <input
-          type="text"
-          className="form-control form-control-md"
-          id="formGroupExampleInput"
-          name="ProductionLineName"
-          value={ProductionLineName}
-          onChange={(e) => onInputChange(e)}
-          autoComplete="off"
-          placeholder="نام خط تولید را وارد کنید..."
-        />
-        <a
-          className="btn btn-danger"
-          onClick={(e) => getAssignedProductionByProductionLineName(e)}
-        >
-          بررسی
-        </a>
-        <a className="btn btn-danger" onClick={(e) => loadProductionLine(e)}>
-          همه
-        </a>
-        {/* <div>
-          <button
-            className="btn btn-danger mx-2 px-3 mt-2"
-            onClick={(e) => loadProductionLine(e)}
-          >
-            همه
-          </button>
-        </div> */}
+      <div className="mt-4">
+        <div className="row">
+          <div className="col-lg-4">
+            <div>
+              <span> * جستوجو بر اساس نام خط تولید</span>
+            </div>
+
+            <div className="input-group mt-2">
+              <input
+                name="ProductionLineName"
+                value={ProductionLineName}
+                onChange={(e) => onInputChange(e)}
+                autoComplete="off"
+                type="text"
+                className="form-control"
+                placeholder="نام خط تولید را وارد کنید."
+              />
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-secondary"
+                  onClick={(e) => getAssignedProductionByProductionLineName(e)}
+                  type="button"
+                >
+                  جستوجو
+                </button>
+              </span>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div>
+              <span> * جستوجو بر اساس نام محصول</span>
+            </div>
+            <div className="input-group mt-2">
+              <input
+                name="ProductionName"
+                value={ProductionName}
+                onChange={(e) => onProductionNameChange(e)}
+                type="text"
+                className="form-control"
+                placeholder="نام محصول را وارد کنید."
+              />
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-secondary"
+                  onClick={(e) => getAssignedProductionByProductionName(e)}
+                  type="button"
+                >
+                  جستوجو
+                </button>
+              </span>
+            </div>
+          </div>
+          <div className="col-lg-2">
+            <div>
+              <span> * انتخاب همه</span>
+            </div>
+            <div className=" mt-2">
+              <span className="input-group-btn">
+                <button
+                  className="btn btn-secondary"
+                  onClick={(e) => loadProductionLine(e)}
+                  type="button"
+                >
+                  انتخاب همه
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-      <table className="table table-bordered mt-3 table-hover">
+
+      <table className="table table-bordered mt-3 table-hover text-center">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">نام خط تولید</th>
+            <th scope="col">نام محصول </th>
             <th scope="col"> کد محصول</th>
             <th scope="col">فعال </th>
             <th scope="col">عملیات </th>
@@ -121,9 +170,10 @@ const ProductionLineProduct = () => {
         </thead>
         <tbody>
           {productionLines.map((x, index) => (
-            <tr key={x.Id}>
+            <tr key={x.ProductionId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
+              <td>{x.ProductionName}</td>
               <td>{x.ProductionCode}</td>
               <td>
                 <div className="form-check form-switch">
@@ -133,7 +183,9 @@ const ProductionLineProduct = () => {
                     role="switch"
                     id="flexSwitchCheckDefault"
                     defaultChecked={x.IsActive}
-                    onClick={() => handleActiveManagement(x.Id)}
+                    onClick={() =>
+                      handleActiveManagement(x.ProductionLineId, x.ProductionId)
+                    }
                   />
                   <label
                     className="form-check-label"
@@ -144,10 +196,13 @@ const ProductionLineProduct = () => {
               <td>
                 <a
                   className="btn btn-danger mx-2 px-3"
-                  onClick={() => deleteAssignedProduction(x.Id)}
+                  onClick={() =>
+                    deleteAssignedProduction(x.ProductionLineId, x.ProductionId)
+                  }
                 >
                   حذف
                 </a>
+                <AssignProductionCost data={x} />
               </td>
             </tr>
           ))}
@@ -158,28 +213,3 @@ const ProductionLineProduct = () => {
 };
 
 export default ProductionLineProduct;
-
-/* <div>
-<div className="input-group mb-3" id="productionLineNameFilter">
-  <input
-    type="text"
-    className="form-control"
-    name="ProductionLineName"
-    value={ProductionLineName}
-    onChange={(e) => onInputChange(e)}
-    autoComplete="off"
-    placeholder="نام خط تولید را وارد کنید..."
-    aria-label="Recipient's username"
-    aria-describedby="basic-addon2"
-  />
-  <div className="input-group-append">
-    <button
-      className="btn btn-outline-secondary"
-      onClick={(e) => getAssignedProductionByProductionLineName(e)}
-      type="button"
-    >
-      بررسی
-    </button>
-  </div>
-</div>
-</div> */

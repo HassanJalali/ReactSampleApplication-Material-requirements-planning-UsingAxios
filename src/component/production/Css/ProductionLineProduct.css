@@ -1,18 +1,10 @@
-#formGroupExampleInput {
-  width: 30% !important;
-  display: inline-block;
-}
-#lblForProductionLineNameFilter {
-  color: grey;
-  display: inline-block;
-}
 ::placeholder {
   text-align: right;
 }
 [type="number"] {
   direction: rtl;
-  
 }
+
 #customeProductionCode {
   width: 70% !important;
   display: inline-block !important;

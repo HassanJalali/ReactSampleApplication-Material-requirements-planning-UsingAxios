@@ -2,65 +2,77 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./Css/AssignProductToProductionLine.css";
 
 const AssignProductToProductionLine = () => {
   let navigate = useNavigate();
 
   const [assignProductToProductionline, SetAssignProductToProductionline] =
     useState({
-      ProductionLineName: "",
+      ProductionLineId: "",
       ProductionCode: "",
+      ProductionName: "",
     });
 
-  // const [message, setMessage] = useState({
-  //   Id: "",
-  //   Name: "",
-  // });
-
   useEffect(() => {
-    loadProductionLine();
+    loadProductionLines();
   }, []);
 
-  const [productionLineName, SetProductionLineName] = useState([]);
-
-  const loadProductionLine = async () => {
+  const [productionLines, SetProductionLines] = useState([]);
+  const loadProductionLines = async () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetProductionLineName"
     );
-    SetProductionLineName(result.data);
+    SetProductionLines(result.data);
   };
 
-  const { ProductionLineName, ProductionCode } = assignProductToProductionline;
+  const getManuficturedProduction = async () => {
+    var res = await axios.get(
+      `https://localhost:7295/api/ProductionLines/GetManufacturedProductInfo?ProductionCode=${ProductionCode}`
+    );
+    // 001006993
+    var GetInfo = res.data.Result;
+    if (GetInfo === null) {
+      SetAssignProductToProductionline({
+        ProductionName: "محصولی با این کد وجود ندارد.",
+        ProductionLineId: ProductionLineId,
+        ProductionCode: "",
+      });
+    } else {
+      SetAssignProductToProductionline({
+        ProductionName: `${GetInfo.Name}`,
+        ProductionLineId: ProductionLineId,
+        ProductionCode: ProductionCode,
+      });
+    }
+  };
+
+  const { ProductionLineId, ProductionCode, ProductionName } =
+    assignProductToProductionline;
   const onInputChange = (e) => {
     SetAssignProductToProductionline({
       ...assignProductToProductionline,
       [e.target.name]: e.target.value,
     });
   };
-
-  const getManuficturedProduction = async () => {
-    var res = await axios.get(
-      `https://localhost:7295/api/Productions/GetManufacturedProductInfo?productionCode=${ProductionCode}`
-      // "https://localhost:7295/api/Productions/GetManufacturedProductInfo?ProductionCode=001006993"
-    );
-  };
-
-  const handleCancle = (async) => {
-    navigate("/productionLineProduct");
-  };
+  console.log("data get", assignProductToProductionline);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (assignProductToProductionline.ProductionLineName == "") {
-      return toast.error(".نام خط تولید را وارد کنید");
+    console.log("data send", assignProductToProductionline);
+    if (assignProductToProductionline.ProductionLineId == "") {
+      return toast.error("نام خط تولید را وارد کنید.");
     }
     if (assignProductToProductionline.ProductionCode == "") {
-      return toast.error(".کد محصول را وارد کنید");
+      return toast.error("کد محصول را وارد کنید.");
+    }
+    if (assignProductToProductionline.ProductionName == "") {
+      return toast.error("نام محصول را وارد کنید.");
     }
 
     var res = await axios
       .post(
-        "https://localhost:7295/api/Productions/AssignProductionToProductionLine",
+        "https://localhost:7295/api/ProductionLines/AssignProductionToProductionLine",
         assignProductToProductionline
       )
       .catch(function (error) {
@@ -68,9 +80,14 @@ const AssignProductToProductionLine = () => {
           toast.error(error.response.data);
         }
       });
+
     if (res.status == "200") {
-      toast.success(".خط تولید با موفقیت ایجاد شد");
+      toast.success("محصول با موفقیت به خط تولید تخصیص داده شد.");
     }
+    navigate("/productionLineProduct");
+  };
+
+  const handleCancle = (async) => {
     navigate("/productionLineProduct");
   };
 
@@ -83,23 +100,24 @@ const AssignProductToProductionLine = () => {
 
         <form onSubmit={(e) => onSubmit(e)}>
           <div className="form-group">
-            <input
-              list="weekday"
+            <select
               className="form-control form-control-md mb-2 "
               type="text"
               placeholder="نام خط تولید را انتخاب کنید."
-              name="ProductionLineName"
-              value={ProductionLineName}
+              name="ProductionLineId"
+              value={ProductionLineId}
               onChange={(e) => onInputChange(e)}
               autoComplete="off"
-            />
-            <datalist id="weekday">
-              {productionLineName.map((cs) => (
-                <option key={cs.Id} value={cs.ProductionLineName}>
+            >
+              <option defaultValue readOnly>
+                نام خط تولید را انتخاب کنید.
+              </option>
+              {productionLines.map((cs) => (
+                <option key={cs.Id} value={cs.Id}>
                   {cs.ProductionLineName}
                 </option>
               ))}
-            </datalist>
+            </select>
           </div>
 
           <div className="form-group mb-2">
@@ -112,6 +130,7 @@ const AssignProductToProductionLine = () => {
               value={ProductionCode}
               onChange={(e) => onInputChange(e)}
               autoComplete="off"
+              onInput={(e) => (e.target.value = e.target.value.slice(0, 9))}
             />
             <a
               className="btn btn-outline-success px-4"
@@ -119,7 +138,17 @@ const AssignProductToProductionLine = () => {
             >
               بررسی صحت کد محصول
             </a>
-            {/* <div>{message}</div> */}
+            <div className="mt-2">
+              <span
+                className="text-success w-50"
+                name="ProductionName"
+                value={ProductionName}
+                placeholder={ProductionName}
+                onChange={(e) => onInputChange(e)}
+              >
+                {ProductionName}
+              </span>
+            </div>
           </div>
           <button className="btn btn-primary w-25 ">ثبت</button>
 

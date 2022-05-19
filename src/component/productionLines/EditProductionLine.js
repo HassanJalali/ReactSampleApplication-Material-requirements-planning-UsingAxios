@@ -41,10 +41,17 @@ const EditProductionLine = () => {
     if (productionLine.CostCenterName == "") {
       return toast.error(" .نام مرکز هزینه را انتخاب کنید");
     }
-    var res = await axios.put(
-      `https://localhost:7295/api/ProductionLines/UpdateProductionLine/${id}`,
-      productionLine
-    );
+
+    var res = await axios
+      .put(
+        `https://localhost:7295/api/ProductionLines/UpdateProductionLine/${id}`,
+        productionLine
+      )
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
     if (res.status == "200") {
       toast.success(".خط تولید با موفقیت ویرایش شد");
     }
