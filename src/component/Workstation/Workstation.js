@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment-jalaali";
 import { toast } from "react-toastify";
+import AddWorkstation from "./AddWorkstation";
+
 const WorkStation = () => {
   const [workstations, setWorkstations] = useState([]);
 
@@ -30,9 +32,7 @@ const WorkStation = () => {
   };
   return (
     <div className="container">
-      <Link className="btn mt-3 px-4 py-2" to="/workstation/add" id="addbtn">
-        تعریف ایستگاه کاری
-      </Link>
+      <AddWorkstation loadWorkstations={loadWorkstations} />
 
       <table className="table table-bordered mt-3 table-hover text-center">
         <thead>

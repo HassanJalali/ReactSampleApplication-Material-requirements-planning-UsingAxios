@@ -13,3 +13,9 @@
 table {
   color: #c1c4d6;
 }
+td {
+  text-align: center !important;
+  /* center checkbox horizontally */
+  vertical-align: middle !important;
+  /* center checkbox vertically */
+}

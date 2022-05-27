@@ -4,7 +4,7 @@ import "./Css/Navbar.css";
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-dark">
       <div className="container">
         <button
           className="navbar-toggler"

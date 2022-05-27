@@ -164,6 +164,8 @@ const ProductionLineProduct = () => {
             <th scope="col">نام خط تولید</th>
             <th scope="col">نام محصول </th>
             <th scope="col"> کد محصول</th>
+            <th scope="col"> کد شناسه محصول</th>
+            <th scope="col"> قیمت محصول</th>
             <th scope="col">فعال </th>
             <th scope="col">عملیات </th>
           </tr>
@@ -175,10 +177,12 @@ const ProductionLineProduct = () => {
               <td>{x.ProductionLineName}</td>
               <td>{x.ProductionName}</td>
               <td>{x.ProductionCode}</td>
+              <td>{x.ProductionCostId === 0 ? "ندارد" : x.ProductionCostId}</td>
+              <td>{x.ProductionCost === 0 ? "ندارد" : x.ProductionCost}</td>
               <td>
-                <div className="form-check form-switch">
+                <div className="form-check form-switch ">
                   <input
-                    className="form-check-input"
+                    className="form-check-input m-auto align-middle "
                     type="checkbox"
                     role="switch"
                     id="flexSwitchCheckDefault"
@@ -194,6 +198,10 @@ const ProductionLineProduct = () => {
                 </div>
               </td>
               <td>
+                <AssignProductionCost
+                  {...x}
+                  loadProductionLine={loadProductionLine}
+                />
                 <a
                   className="btn btn-danger mx-2 px-3"
                   onClick={() =>
@@ -202,7 +210,6 @@ const ProductionLineProduct = () => {
                 >
                   حذف
                 </a>
-                <AssignProductionCost data={x} />
               </td>
             </tr>
           ))}

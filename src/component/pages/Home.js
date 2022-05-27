@@ -69,7 +69,7 @@ const Home = () => {
               <td>
                 <div className="form-check form-switch">
                   <input
-                    className="form-check-input"
+                    className="form-check-input  m-auto align-middle"
                     type="checkbox"
                     role="switch"
                     id="flexSwitchCheckDefault"

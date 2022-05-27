@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import moment from "moment-jalaali";
 import axios from "axios";
 import { toast } from "react-toastify";
+import AssignWorkstationToProductionLine from "./AssignWorkstationToProductionLine";
 
 const AssignWorkstationHome = () => {
   const [assignedWorkstations, setAssignedWorkstations] = useState([]);
@@ -29,13 +30,9 @@ const AssignWorkstationHome = () => {
   };
   return (
     <div className="container">
-      <Link
-        className="btn mt-3 px-4 py-2"
-        to="/AssignWorkstation/add"
-        id="addbtn"
-      >
-        تخصیص ایستگاه کاری به خط تولید
-      </Link>
+      <AssignWorkstationToProductionLine
+        loadAssignedWorkstations={loadAssignedWorkstations}
+      />
 
       <table className="table table-bordered mt-3 table-hover text-center">
         <thead>

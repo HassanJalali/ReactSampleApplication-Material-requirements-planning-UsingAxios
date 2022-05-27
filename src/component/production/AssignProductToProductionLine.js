@@ -59,7 +59,6 @@ const AssignProductToProductionLine = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log("data send", assignProductToProductionline);
     if (assignProductToProductionline.ProductionLineId == "") {
       return toast.error("نام خط تولید را وارد کنید.");
     }

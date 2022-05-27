@@ -2,6 +2,7 @@ import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment-jalaali";
+import AddProductionHeader from "./AddProductionHeader";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
@@ -20,13 +21,7 @@ const ProductionHeader = () => {
 
   return (
     <div className="container">
-      <Link
-        className="btn mt-3 px-4 py-2"
-        to="/productionheader/add"
-        id="addbtn"
-      >
-        ایجاد سربرگ محصول
-      </Link>
+      <AddProductionHeader LoadProductionHeaders={LoadProductionHeaders} />
 
       <table className="table table-bordered mt-3 table-hover text-center">
         <thead>
@@ -44,7 +39,7 @@ const ProductionHeader = () => {
         </thead>
         <tbody>
           {productionHeaders.map((x, index) => (
-            <tr key={x.Id}>
+            <tr key={x.ProductionHeaderId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductId}</td>
               <td>{x.ProductionLineName}</td>

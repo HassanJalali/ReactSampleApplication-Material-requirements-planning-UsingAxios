@@ -2,9 +2,14 @@ import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Form, Button, Modal } from "react-bootstrap";
 
-const AssignWorkstationToProductionLine = () => {
+const AssignWorkstationToProductionLine = (props) => {
   let navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [assignWorkstation, setAssignWorkstation] = useState({
     ProductionLineId: "",
     WorkstationTypeId: "",
@@ -43,14 +48,14 @@ const AssignWorkstationToProductionLine = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (assignWorkstation.ProductionLineId == "") {
-      return toast.error(".نام خط تولید را وارد کنید");
+    if (assignWorkstation.ProductionLineId === "") {
+      return toast.error("نام خط تولید را وارد کنید.");
     }
-    if (assignWorkstation.WorkstationTypeId == "") {
-      return toast.error(".نوع ایستگاه کاری را انتخاب کنید.");
+    if (assignWorkstation.WorkstationTypeId === "") {
+      return toast.error("نوع ایستگاه کاری را انتخاب کنید.");
     }
-    if (assignWorkstation.WorkstationAssignmentOrder == "") {
-      return toast.error(".ترتیب ایستگاه کاری را انتخاب کنید");
+    if (assignWorkstation.WorkstationAssignmentOrder === "") {
+      return toast.error("ترتیب ایستگاه کاری را انتخاب کنید.");
     }
     var res = await axios
       .post(
@@ -62,84 +67,95 @@ const AssignWorkstationToProductionLine = () => {
           toast.error(error.response.data);
         }
       });
-
     if (res.status == "200") {
-      navigate("/AssignWorkstationHome");
       toast.success("ایستگاه کاری با موفقیت به خط تولید تخصیص داده شد.");
+      handleClose();
+      props.loadAssignedWorkstations();
     }
   };
-  const handleCancle = (async) => {
-    navigate("/AssignWorkstationHome");
-  };
+
   return (
-    <div className="container">
-      <div className="w-75 mx-auto shadow p-5 mt-5">
-        <h2 className="text-center mb-4" id="formTitle">
-          تخصیص ایستگاه کاری به خط تولید
-        </h2>
-        <form onSubmit={(e) => onSubmit(e)}>
-          <div className="form-group">
-            <select
-              className="form-control form-control-md mb-2 "
-              type="text"
-              name="ProductionLineId"
-              value={ProductionLineId}
-              onChange={(e) => onInputChange(e)}
-              autoComplete="off"
-            >
-              <option defaultValue readOnly>
-                نام خط تولید را انتخاب کنید.
-              </option>
-              {productionLineName.map((cs) => (
-                <option key={cs.Id} value={cs.Id}>
-                  {cs.ProductionLineName}
-                </option>
-              ))}
-            </select>
-          </div>
+    <>
+      <Button id="addbtn" className="btn mt-3 px-4 py-2" onClick={handleShow}>
+        تخصیص ایستگاه کاری به خط تولید
+      </Button>
 
-          <div className="form-group">
-            <select
-              className="form-control form-control-md mb-2 "
-              type="text"
-              placeholder="نوع ایستگاه کاری را انتخاب کنید."
-              name="WorkstationTypeId"
-              value={WorkstationTypeId}
-              onChange={(e) => onInputChange(e)}
-              autoComplete="off"
-            >
-              <option defaultValue readOnly>
-                نوع ایستگاه کاری را انتخاب کنید
-              </option>
-              {workstationTypes.map((cs) => (
-                <option key={cs.WorkstationId} value={cs.WorkstationId}>
-                  {cs.WorkstationType}
-                </option>
-              ))}
-            </select>
-          </div>
+      <Modal show={show} onHide={handleClose}>
+        <Form onSubmit={(e) => onSubmit(e)}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* نام خط تولید </Form.Label>
+              <div className="form-group">
+                <select
+                  className="form-control form-control-md mb-2 "
+                  type="text"
+                  name="ProductionLineId"
+                  value={ProductionLineId}
+                  onChange={(e) => onInputChange(e)}
+                  autoComplete="off"
+                >
+                  <option defaultValue readOnly>
+                    نام خط تولید را انتخاب کنید.
+                  </option>
+                  {productionLineName.map((cs) => (
+                    <option key={cs.Id} value={cs.Id}>
+                      {cs.ProductionLineName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </Form.Group>
 
-          <div className="form-group mb-2">
-            <input
-              type="text"
-              className="form-control form-control-md"
-              placeholder="ترتیب ایستگاه کاری را وارد کنید."
-              name="WorkstationAssignmentOrder"
-              value={WorkstationAssignmentOrder}
-              onChange={(e) => onInputChange(e)}
-            />
-          </div>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* ایستگاه کاری </Form.Label>
+              <div className="form-group">
+                <select
+                  className="form-control form-control-md mb-2 "
+                  type="text"
+                  placeholder="نوع ایستگاه کاری را انتخاب کنید."
+                  name="WorkstationTypeId"
+                  value={WorkstationTypeId}
+                  onChange={(e) => onInputChange(e)}
+                  autoComplete="off"
+                >
+                  <option defaultValue readOnly>
+                    نوع ایستگاه کاری را انتخاب کنید
+                  </option>
+                  {workstationTypes.map((cs) => (
+                    <option key={cs.WorkstationId} value={cs.WorkstationId}>
+                      {cs.WorkstationType}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </Form.Group>
 
-          <button className="btn btn-primary w-25 ">ثبت</button>
-          <button
-            className="btn btn-danger m-2 w-25 "
-            onClick={(e) => handleCancle(e)}
-          >
-            لغو
-          </button>
-        </form>
-      </div>
-    </div>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* ترتیب ایستگاه کاری </Form.Label>
+              <div className="form-group mb-2">
+                <input
+                  type="text"
+                  className="form-control form-control-md"
+                  placeholder="ترتیب ایستگاه کاری را وارد کنید."
+                  name="WorkstationAssignmentOrder"
+                  value={WorkstationAssignmentOrder}
+                  onChange={(e) => onInputChange(e)}
+                />
+              </div>
+            </Form.Group>
+          </Modal.Body>
+
+          <Modal.Footer dir={"ltr"}>
+            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+              لغو
+            </Button>
+            <Button type="submit" className="btn btn-primary m-2 w-25">
+              ثبت
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   );
 };
 
