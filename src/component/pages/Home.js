@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import moment from "moment-jalaali";
+import AddProductionline from "../productionLines/AddProductionline";
 import "./Css/Home.css";
+import EditProductionLine from "../productionLines/EditProductionLine";
 
 const Home = () => {
   const [productionLines, setProductionLines] = useState([]);
@@ -38,9 +40,7 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Link className="btn mt-3 px-4 py-2" to="/produtionLine/add" id="addbtn">
-        ایجاد خط تولید
-      </Link>
+      <AddProductionline loadProductionLine={loadProductionLine} />
 
       <table className="table table-bordered mt-3 table-hover text-center">
         <thead>
@@ -83,12 +83,10 @@ const Home = () => {
                 </div>
               </td>
               <td>
-                <Link
-                  className="btn btn-success"
-                  to={`/productionline/edit/${x.Id}`}
-                >
-                  ویرایش
-                </Link>
+                <EditProductionLine
+                  {...x}
+                  loadProductionLine={loadProductionLine}
+                />
                 <a
                   className="btn btn-danger mx-2 px-3"
                   onClick={() => deleteProductionLine(x.Id)}

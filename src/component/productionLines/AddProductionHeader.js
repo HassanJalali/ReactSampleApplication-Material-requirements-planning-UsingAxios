@@ -1,20 +1,10 @@
 import { React, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-//import { useNavigate } from "react-router-dom";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-//import { Link } from "react-router-dom";
 
 const AddProductionHeader = (props) => {
-  var params = useParams();
-  const [productionHeader, setProductionHeader] = useState({
-    ProductionLineId: "",
-    ProductionCostId: "",
-    ProductionCode: "",
-    UserId: "",
-    Description: "",
-  });
+  const [productionHeader, setProductionHeader] = useState({});
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -25,16 +15,19 @@ const AddProductionHeader = (props) => {
   }, []);
 
   const [productionLineName, SetProductionLineName] = useState([]);
+  const [productionLineId, setProductionLineId] = useState("");
   const loadProductionLine = async () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetProductionLineName"
     );
-    SetProductionLineName(result.data);
+    var getData = result.data;
+    SetProductionLineName(getData);
   };
 
   const [productionName, SetProductionName] = useState([]);
+  const [productionCode, SetProductionCode] = useState("");
   const onProductionLineChange = async (e) => {
-    setProductionHeader({ ProductionLineId: e.target.value });
+    setProductionLineId(e.target.value);
     const res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetActiveAssignedProductionByProductionLineId?productionLineId=${e.target.value}`
     );
@@ -42,57 +35,67 @@ const AddProductionHeader = (props) => {
     SetProductionName(getData);
   };
 
-  const [productionCostId, SetProductionCostId] = useState([]);
+  const [productionCost, SetProductionCost] = useState([]);
+  const [productionCostId, setProductionCostsId] = useState("");
   const onProductionChange = async (e) => {
-    const data = {
-      params: {
-        ProductionLineId: productionHeader.ProductionLineId,
-        ProductionCode: e.target.value,
-      },
-    };
+    SetProductionCode(e.target.value);
     const res = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetProductionCostIdByProductionLineIdAndProductionCode`,
-      data
+      `https://localhost:7295/api/ProductionLines/GetProductionCostIdByProductionLineIdAndProductionCode/${productionLineId}/${e.target.value}`
     );
+
     var getData = res.data;
-    SetProductionCostId(getData);
+    SetProductionCost(getData);
   };
 
   const onProductionCostIdChange = (e) => {
-    setProductionHeader({ ProductionCostId: e.target.value });
+    setProductionCostsId(e.target.value);
   };
-
+  const [userId, SetUser] = useState("");
   const onUserIdChange = (e) => {
-    setProductionHeader({ UserId: e.target.value });
+    SetUser(e.target.value);
   };
-
+  const [description, Setdescription] = useState("");
   const onTextAreaChange = (e) => {
-    setProductionHeader({ Description: e.target.value });
+    Setdescription(e.target.value);
   };
-
   const onSubmit = async (e) => {
-    console.log("???", productionHeader);
-    if (productionHeader.ProductionLineId === "") {
+    e.preventDefault();
+    if (productionLineId === "") {
       return toast.error("نام خط تولید را وارد کنید.");
     }
-    if (productionHeader.ProductionCode === "") {
+    if (productionCode === "") {
       return toast.error("نام محصول را وارد کنید.");
     }
-    if (productionHeader.ProductionCostId === "") {
+    if (productionCostId === "") {
       return toast.error("شناسه محصول را وارد کنید.");
     }
-    if (productionHeader.UserId === "") {
+    if (userId === "") {
       return toast.error(" کد پرسنلی را وارد کنید.");
     }
 
-    var res = await axios.post("", productionHeader).catch(function (error) {
-      if (error.response) {
-        toast.error(error.response.data);
-      }
-    });
+    // var data = {
+    //   params: {
+    //     productionLineId,
+    //     productionCode,
+    //     productionCostId,
+    //     userId,
+    //     description,
+    //   },
+    // };
+    console.log("getdata", productionHeader);
+    var res = await axios
+      .post(
+        "https://localhost:7295/api/ProductionLines/CreateProductionHeader",
+        productionHeader
+      )
 
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
     if (res.status == "200") {
-      toast.success("سر برگ با موفقیت ایجاد شد.");
+      return toast.success("سر برگ با موفقیت ایجاد شد.");
     }
   };
 
@@ -111,7 +114,7 @@ const AddProductionHeader = (props) => {
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionLineId"
-                value={productionHeader.ProductionLineId}
+                value={productionLineId}
                 onChange={(e) => onProductionLineChange(e)}
                 autoComplete="off"
               >
@@ -131,7 +134,7 @@ const AddProductionHeader = (props) => {
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionCode"
-                value={productionHeader.ProductionCode}
+                value={productionCode}
                 onChange={(e) => onProductionChange(e)}
                 autoComplete="off"
               >
@@ -150,27 +153,24 @@ const AddProductionHeader = (props) => {
               <select
                 className="form-control form-control-md mb-2 "
                 type="text"
-                name="ProductionCostId"
-                value={productionHeader.ProductionCostId}
+                name="productionCostId"
+                value={productionCostId}
                 onChange={(e) => onProductionCostIdChange(e)}
                 autoComplete="off"
               >
-                <option defaultValue readOnly>
-                  شناسه محصول را انتخاب کنید.
-                </option>
-                <option>
-                  شناسه محصول : {productionCostId.ProductionCostId} | قیمت محصول
-                  : {productionCostId.ProductionCost}
+                <option value={productionCost.ProductionCostId}>
+                  شناسه محصول : {productionCost.ProductionCostId} | قیمت محصول :
+                  {productionCost.ProductionCost}
                 </option>
               </select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* ثبات </Form.Label>
               <Form.Control
-                name="UserId"
-                value={productionHeader.UserId}
+                name="userId"
+                value={userId}
                 onChange={(e) => onUserIdChange(e)}
-                type="text"
+                type="number"
                 placeholder="کد پرسنلی را وارد کنید ."
               />
             </Form.Group>
@@ -181,14 +181,11 @@ const AddProductionHeader = (props) => {
               <Form.Label> * توضیحات</Form.Label>
               <Form.Control
                 name="Description"
-                value={productionHeader.Description}
+                value={description}
                 onChange={(e) => onTextAreaChange(e)}
                 placeholder="توضیحات الزامی نمی باشد, در صودت نیاز می توانید این قسمت را پر کنید."
                 as="textarea"
                 rows={3}
-                //   textarea {
-                //     resize: none;
-                //  }
               />
             </Form.Group>
           </Modal.Body>

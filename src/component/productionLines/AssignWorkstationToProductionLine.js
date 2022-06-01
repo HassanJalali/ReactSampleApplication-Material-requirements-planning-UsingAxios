@@ -13,7 +13,7 @@ const AssignWorkstationToProductionLine = (props) => {
   const [assignWorkstation, setAssignWorkstation] = useState({
     ProductionLineId: "",
     WorkstationTypeId: "",
-    WorkstationAssignmentOrder: "",
+    workstationOrder: "",
   });
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const AssignWorkstationToProductionLine = (props) => {
     setWorkstationTypes(result.data);
   };
 
-  const { ProductionLineId, WorkstationTypeId, WorkstationAssignmentOrder } =
+  const { ProductionLineId, WorkstationTypeId, workstationOrder } =
     assignWorkstation;
   const onInputChange = (e) => {
     setAssignWorkstation({
@@ -54,7 +54,7 @@ const AssignWorkstationToProductionLine = (props) => {
     if (assignWorkstation.WorkstationTypeId === "") {
       return toast.error("نوع ایستگاه کاری را انتخاب کنید.");
     }
-    if (assignWorkstation.WorkstationAssignmentOrder === "") {
+    if (assignWorkstation.workstationOrder === "") {
       return toast.error("ترتیب ایستگاه کاری را انتخاب کنید.");
     }
     var res = await axios
@@ -137,8 +137,8 @@ const AssignWorkstationToProductionLine = (props) => {
                   type="text"
                   className="form-control form-control-md"
                   placeholder="ترتیب ایستگاه کاری را وارد کنید."
-                  name="WorkstationAssignmentOrder"
-                  value={WorkstationAssignmentOrder}
+                  name="workstationOrder"
+                  value={workstationOrder}
                   onChange={(e) => onInputChange(e)}
                 />
               </div>

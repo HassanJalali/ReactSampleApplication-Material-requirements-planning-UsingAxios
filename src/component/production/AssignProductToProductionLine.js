@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Modal, Form, Button } from "react-bootstrap";
 import "./Css/AssignProductToProductionLine.css";
 
-const AssignProductToProductionLine = () => {
-  let navigate = useNavigate();
+const AssignProductToProductionLine = (props) => {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const [assignProductToProductionline, SetAssignProductToProductionline] =
     useState({
@@ -30,7 +32,6 @@ const AssignProductToProductionLine = () => {
     var res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetManufacturedProductInfo?ProductionCode=${ProductionCode}`
     );
-    // 001006993
     var GetInfo = res.data.Result;
     if (GetInfo === null) {
       SetAssignProductToProductionline({
@@ -55,7 +56,6 @@ const AssignProductToProductionLine = () => {
       [e.target.name]: e.target.value,
     });
   };
-  console.log("data get", assignProductToProductionline);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -82,84 +82,90 @@ const AssignProductToProductionLine = () => {
 
     if (res.status == "200") {
       toast.success("محصول با موفقیت به خط تولید تخصیص داده شد.");
+      handleClose();
+      props.loadProductionLine();
     }
-    navigate("/productionLineProduct");
-  };
-
-  const handleCancle = (async) => {
-    navigate("/productionLineProduct");
   };
 
   return (
-    <div className="container">
-      <div className="w-75 mx-auto shadow p-5 mt-5">
-        <h2 className="text-center mb-4" id="formTitle">
-          تخصیص محصول به خط تولید
-        </h2>
+    <>
+      <Button className="btn mt-3 px-4 py-2" id="addbtn" onClick={handleShow}>
+        تخصیص محصول به خط تولید
+      </Button>
 
-        <form onSubmit={(e) => onSubmit(e)}>
-          <div className="form-group">
-            <select
-              className="form-control form-control-md mb-2 "
-              type="text"
-              placeholder="نام خط تولید را انتخاب کنید."
-              name="ProductionLineId"
-              value={ProductionLineId}
-              onChange={(e) => onInputChange(e)}
-              autoComplete="off"
-            >
-              <option defaultValue readOnly>
-                نام خط تولید را انتخاب کنید.
-              </option>
-              {productionLines.map((cs) => (
-                <option key={cs.Id} value={cs.Id}>
-                  {cs.ProductionLineName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group mb-2">
-            <input
-              id="customeProductionCode"
-              type="number"
-              className="form-control form-control-md"
-              placeholder="کد محصول ۹ رقمی را وارد کنید."
-              name="ProductionCode"
-              value={ProductionCode}
-              onChange={(e) => onInputChange(e)}
-              autoComplete="off"
-              onInput={(e) => (e.target.value = e.target.value.slice(0, 9))}
-            />
-            <a
-              className="btn btn-outline-success px-4"
-              onClick={(e) => getManuficturedProduction(e)}
-            >
-              بررسی صحت کد محصول
-            </a>
-            <div className="mt-2">
-              <span
-                className="text-success w-50"
-                name="ProductionName"
-                value={ProductionName}
-                placeholder={ProductionName}
+      <Modal show={show} onHide={handleClose}>
+        <Form onSubmit={(e) => onSubmit(e)}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* نام خط تولید </Form.Label>
+              <select
+                className="form-control form-control-md mb-2 "
+                type="text"
+                name="ProductionLineId"
+                value={ProductionLineId}
                 onChange={(e) => onInputChange(e)}
+                autoComplete="off"
               >
-                {ProductionName}
-              </span>
-            </div>
-          </div>
-          <button className="btn btn-primary w-25 ">ثبت</button>
+                <option defaultValue readOnly>
+                  نام خط تولید را انتخاب کنید.
+                </option>
+                {productionLines.map((cs) => (
+                  <option key={cs.Id} value={cs.Id}>
+                    {cs.ProductionLineName}
+                  </option>
+                ))}
+              </select>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* مرکز هرینه </Form.Label>
+              <Form.Control
+                type="number"
+                className="form-control form-control-md"
+                placeholder="کد محصول ۹ رقمی را وارد کنید."
+                name="ProductionCode"
+                value={ProductionCode}
+                onChange={(e) => onInputChange(e)}
+                autoComplete="off"
+                onInput={(e) => (e.target.value = e.target.value.slice(0, 9))}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <div className="d-grid gap-2">
+                <Button
+                  variant="outline-primary"
+                  size="md"
+                  onClick={(e) => getManuficturedProduction(e)}
+                >
+                  بررسی صحت کد محصول
+                </Button>
+              </div>
+            </Form.Group>
 
-          <button
-            className="btn btn-danger m-2 w-25 "
-            onClick={(e) => handleCancle(e)}
-          >
-            لغو
-          </button>
-        </form>
-      </div>
-    </div>
+            <Form.Group controlId="exampleForm.ControlInput1">
+              <div className="mt-2">
+                <span
+                  className="text-success w-50"
+                  name="ProductionName"
+                  value={ProductionName}
+                  placeholder={ProductionName}
+                  onChange={(e) => onInputChange(e)}
+                >
+                  {ProductionName}
+                </span>
+              </div>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer dir={"ltr"}>
+            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+              لغو
+            </Button>
+            <Button type="submit" className="btn btn-primary m-2 w-25">
+              ثبت
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

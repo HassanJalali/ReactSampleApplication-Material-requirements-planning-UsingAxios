@@ -25,7 +25,9 @@ const AssignWorkstationHome = () => {
     );
     loadAssignedWorkstations();
     if (res.status == "200") {
-      toast.success("ایستگاه کاری تخصیص داده شده با موفقیت حذف شد.");
+      toast.success(
+        "ایستگاه کاری تخصیص داده شده به خط تولید با موفقیت حذف شد."
+      );
     }
   };
   return (

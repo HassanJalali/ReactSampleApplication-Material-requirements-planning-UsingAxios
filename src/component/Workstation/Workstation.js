@@ -25,9 +25,7 @@ const WorkStation = () => {
     );
     loadWorkstations();
     if (res.status == "200") {
-      toast.success(
-        "ایستگاه کاری تخصیص داده شده با موفقیت از خط تولید حذف شد."
-      );
+      toast.success("ایستگاه کاری با موفقیت حذف شد.");
     }
   };
   return (

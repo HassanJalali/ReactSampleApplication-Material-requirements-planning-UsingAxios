@@ -2,11 +2,15 @@ import { React, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button, Form, Modal } from "react-bootstrap";
 import "./Css/EditProductioLine.css";
 
-const EditProductionLine = () => {
-  let navigate = useNavigate();
-  const { id } = useParams();
+const EditProductionLine = (props) => {
+  const [productionLineState, setProductionLineState] = useState(props);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [productionLine, setProductionline] = useState({
     ProductionLineName: "",
     CostCenterName: "",
@@ -44,7 +48,7 @@ const EditProductionLine = () => {
 
     var res = await axios
       .put(
-        `https://localhost:7295/api/ProductionLines/UpdateProductionLine/${id}`,
+        `https://localhost:7295/api/ProductionLines/UpdateProductionLine/${productionLineState.Id}`,
         productionLine
       )
       .catch(function (error) {
@@ -53,69 +57,71 @@ const EditProductionLine = () => {
         }
       });
     if (res.status == "200") {
-      toast.success(".خط تولید با موفقیت ویرایش شد");
+      toast.success("خط تولید با موفقیت ویرایش شد.");
+      handleClose();
+      props.loadProductionLine();
     }
-    navigate("/");
   };
 
   const loadProductionLine = async () => {
     const result = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetProductionLineById/${id}`
+      `https://localhost:7295/api/ProductionLines/GetProductionLineById/${productionLineState.Id}`
     );
     setProductionline(result.data);
   };
-
-  const handleCancle = (async) => {
-    navigate("/");
-  };
-
   return (
-    <div className="container">
-      <div className="w-75 mx-auto shadow p-5 mt-5">
-        <h2 className="text-center mb-4" id="formTitle">
-          ویرایش خط تولید
-        </h2>
-        <form onSubmit={(e) => onSubmit(e)}>
-          <div className="form-group mb-2">
-            <input
-              type="text"
-              className="form-control form-control-md "
-              placeholder="نام خط تولید را وارد کنید."
-              name="ProductionLineName"
-              value={ProductionLineName}
-              onChange={(e) => onInputChange(e)}
-            />
-          </div>
+    <>
+      <Button className="btn btn-success" onClick={handleShow}>
+        ویرایش
+      </Button>
 
-          <div className="form-group">
-            <input
-              list="weekday"
-              className="form-control form-control-md mb-2 "
-              type="text"
-              placeholder="نام مرکز تولید را وارد کنید."
-              name="CostCenterName"
-              value={CostCenterName}
-              onChange={(e) => onInputChange(e)}
-            />
-            <datalist id="weekday">
-              <option selected>{CostCenterName}</option>
-              {costCenters.map((cs) => (
-                <option key={cs.Id} value={cs.Name}>
-                  {cs.Name}
+      <Modal show={show} onHide={handleClose}>
+        <Form onSubmit={(e) => onSubmit(e)}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* نام خط تولید </Form.Label>
+              <Form.Control
+                name="ProductionLineName"
+                value={ProductionLineName}
+                onChange={(e) => onInputChange(e)}
+                type="text"
+                placeholder="نام خط تولید را وارد کنید."
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* مرکز هرینه </Form.Label>
+              <select
+                className="form-control form-control-md mb-2 "
+                type="text"
+                placeholder="نام مرکز هزینه را وارد کنید."
+                name="CostCenterName"
+                value={CostCenterName}
+                onChange={(e) => onInputChange(e)}
+                autoComplete="off"
+              >
+                <option defaultValue readOnly>
+                  نام مرکز هزینه را وارد کنید.
                 </option>
-              ))}
-            </datalist>
-          </div>
-          <button className="btn btn-primary w-25 ">ویرایش </button>
-          <button
-            className="btn btn-danger m-2 w-25 "
-            onClick={(e) => handleCancle(e)}
-          >
-            لغو
-          </button>
-        </form>
-      </div>
-    </div>
+                {costCenters.map((cs) => (
+                  <option key={cs.Id} value={cs.Name}>
+                    {cs.Name}
+                  </option>
+                ))}
+              </select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer dir={"ltr"}>
+            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+              لغو
+            </Button>
+            <Button type="submit" className="btn btn-primary m-2 w-25">
+              ویرایش
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

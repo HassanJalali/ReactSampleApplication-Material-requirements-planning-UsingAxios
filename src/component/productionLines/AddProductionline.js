@@ -1,16 +1,17 @@
 import axios from "axios";
 import { React, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import "./Css/AddProductionline.css";
 
-const AddProductionline = () => {
-  let navigate = useNavigate();
-
+const AddProductionline = (props) => {
   const [productionLine, setProductionline] = useState({
     ProductionLineName: "",
     CostCenterName: "",
   });
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const [costCenters, setCostCenters] = useState([]);
 
@@ -49,63 +50,86 @@ const AddProductionline = () => {
         }
       });
     if (res.status == "200") {
-      toast.success(".خط تولید با موفقیت ایجاد شد");
+      toast.success("خط تولید با موفقیت ایجاد شد.");
+      handleClose();
+      props.loadProductionLine();
     }
-    navigate("/");
-  };
-
-  const handleCancle = (async) => {
-    navigate("/");
   };
 
   return (
-    <div className="container">
-      <div className="w-75 mx-auto shadow p-5 mt-5">
-        <h2 className="text-center mb-4" id="formTitle">
-          ایجاد خط تولید
-        </h2>
-        <form onSubmit={(e) => onSubmit(e)}>
-          <div className="form-group mb-2">
-            <input
-              type="text"
-              className="form-control form-control-md"
-              placeholder="نام خط تولید را وارد کنید."
-              name="ProductionLineName"
-              value={ProductionLineName}
-              onChange={(e) => onInputChange(e)}
-            />
-          </div>
+    <>
+      <Button id="addbtn" className="btn mt-3 px-4 py-2" onClick={handleShow}>
+        ایجاد خط تولید
+      </Button>
 
-          <div className="form-group">
-            <input
-              list="weekday"
-              className="form-control form-control-md mb-2 "
-              type="text"
-              placeholder="نام مرکز تولید را وارد کنید."
-              name="CostCenterName"
-              value={CostCenterName}
-              onChange={(e) => onInputChange(e)}
-            />
-            <datalist id="weekday">
-              {costCenters.map((cs) => (
-                <option key={cs.Id} value={cs.Name}>
-                  {cs.Name}
+      <Modal show={show} onHide={handleClose}>
+        <Form onSubmit={(e) => onSubmit(e)}>
+          <Modal.Body>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* نام خط تولید </Form.Label>
+              <Form.Control
+                name="ProductionLineName"
+                value={ProductionLineName}
+                onChange={(e) => onInputChange(e)}
+                type="text"
+                placeholder="نام خط تولید را وارد کنید."
+                autoComplete="off"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>* مرکز هرینه </Form.Label>
+              <select
+                className="form-control form-control-md mb-2 "
+                type="text"
+                placeholder="نام مرکز هزینه را وارد کنید."
+                name="CostCenterName"
+                value={CostCenterName}
+                onChange={(e) => onInputChange(e)}
+                autoComplete="off"
+              >
+                <option defaultValue readOnly>
+                  نام مرکز هزینه را وارد کنید.
                 </option>
-              ))}
-            </datalist>
-          </div>
-
-          <button className="btn btn-primary w-25 ">ثبت</button>
-          <button
-            className="btn btn-danger m-2 w-25 "
-            onClick={(e) => handleCancle(e)}
-          >
-            لغو
-          </button>
-        </form>
-      </div>
-    </div>
+                {costCenters.map((cs) => (
+                  <option key={cs.Id} value={cs.Name}>
+                    {cs.Name}
+                  </option>
+                ))}
+              </select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer dir={"ltr"}>
+            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+              لغو
+            </Button>
+            <Button type="submit" className="btn btn-primary m-2 w-25">
+              ثبت
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+    </>
   );
 };
 
 export default AddProductionline;
+
+//         <div className="form-group">
+//           <input
+//             list="weekday"
+//             className="form-control form-control-md mb-2 "
+//             type="text"
+//             placeholder="نام مرکز تولید را وارد کنید."
+//             name="CostCenterName"
+//             value={CostCenterName}
+//             onChange={(e) => onInputChange(e)}
+//           />
+//           <datalist id="weekday">
+//             {costCenters.map((cs) => (
+//               <option key={cs.Id} value={cs.Name}>
+//                 {cs.Name}
+//               </option>
+//             ))}
+//           </datalist>
+//         </div>

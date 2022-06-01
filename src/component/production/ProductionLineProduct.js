@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./Css/ProductionLineProduct.css";
 import AssignProductionCost from "../productionLines/AssignProductionCost";
+import AssignProductToProductionLine from "./AssignProductToProductionLine";
 
 const ProductionLineProduct = () => {
   let navigate = useNavigate();
@@ -78,13 +79,7 @@ const ProductionLineProduct = () => {
 
   return (
     <div className="container">
-      <Link
-        className="btn mt-3 px-4 py-2"
-        to="/assignProductToProductionLine/add"
-        id="addbtn"
-      >
-        تخصیص محصول به خط تولید
-      </Link>
+      <AssignProductToProductionLine loadProductionLine={loadProductionLine} />
 
       <div className="mt-4">
         <div className="row">

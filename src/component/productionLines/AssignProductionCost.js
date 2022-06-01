@@ -40,8 +40,6 @@ const AssignProductionCost = (props) => {
     });
   };
 
-  console.log("???", assignProductionCostId);
-
   const onSubmit = async (e) => {
     e.preventDefault();
     if (assignProductionCostId.ProductionCostId === "") {

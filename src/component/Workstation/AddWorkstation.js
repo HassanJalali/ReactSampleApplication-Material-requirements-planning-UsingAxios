@@ -20,7 +20,7 @@ const AddWorkstation = (props) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (workstation.WorkstationType == "") {
-      return toast.error(".نام ایستگاه کاری را وارد کنید");
+      return toast.error("نام ایستگاه کاری را وارد کنید.");
     }
 
     var res = await axios
