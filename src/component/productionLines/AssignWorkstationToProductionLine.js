@@ -1,40 +1,46 @@
 import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { Form, Button, Modal } from "react-bootstrap";
 
 const AssignWorkstationToProductionLine = (props) => {
-  let navigate = useNavigate();
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const [assignWorkstation, setAssignWorkstation] = useState({
     ProductionLineId: "",
     WorkstationTypeId: "",
     workstationOrder: "",
   });
+  const [productionLineName, SetProductionLineName] = useState([]);
+  const [workstationTypes, setWorkstationTypes] = useState([]);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setAssignWorkstation({
+      ProductionLineId: "",
+      WorkstationTypeId: "",
+      workstationOrder: "",
+    });
+    setShow(true);
+  };
 
   useEffect(() => {
     loadProductionLine();
     loadWorkstationTypes();
   }, []);
 
-  const [productionLineName, SetProductionLineName] = useState([]);
   const loadProductionLine = async () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetProductionLineName"
     );
-    SetProductionLineName(result.data);
+    var getData = result.data;
+    SetProductionLineName(getData);
   };
 
-  const [workstationTypes, setWorkstationTypes] = useState([]);
   const loadWorkstationTypes = async () => {
     const result = await axios.get(
       "https://localhost:7295/api/Workstations/GetWorkstations"
     );
-    setWorkstationTypes(result.data);
+    var getData = result.data;
+    setWorkstationTypes(getData);
   };
 
   const { ProductionLineId, WorkstationTypeId, workstationOrder } =
@@ -67,7 +73,7 @@ const AssignWorkstationToProductionLine = (props) => {
           toast.error(error.response.data);
         }
       });
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success("ایستگاه کاری با موفقیت به خط تولید تخصیص داده شد.");
       handleClose();
       props.loadAssignedWorkstations();
@@ -84,9 +90,9 @@ const AssignWorkstationToProductionLine = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام خط تولید </Form.Label>
+              <Form.Label>* خط تولید </Form.Label>
               <div className="form-group">
-                <select
+                <Form.Select
                   className="form-control form-control-md mb-2 "
                   type="text"
                   name="ProductionLineId"
@@ -94,22 +100,20 @@ const AssignWorkstationToProductionLine = (props) => {
                   onChange={(e) => onInputChange(e)}
                   autoComplete="off"
                 >
-                  <option defaultValue readOnly>
-                    نام خط تولید را انتخاب کنید.
-                  </option>
+                  <option hidden>نام خط تولید را انتخاب کنید.</option>
                   {productionLineName.map((cs) => (
                     <option key={cs.Id} value={cs.Id}>
                       {cs.ProductionLineName}
                     </option>
                   ))}
-                </select>
+                </Form.Select>
               </div>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* ایستگاه کاری </Form.Label>
               <div className="form-group">
-                <select
+                <Form.Select
                   className="form-control form-control-md mb-2 "
                   type="text"
                   placeholder="نوع ایستگاه کاری را انتخاب کنید."
@@ -118,15 +122,13 @@ const AssignWorkstationToProductionLine = (props) => {
                   onChange={(e) => onInputChange(e)}
                   autoComplete="off"
                 >
-                  <option defaultValue readOnly>
-                    نوع ایستگاه کاری را انتخاب کنید
-                  </option>
+                  <option hidden>نوع ایستگاه کاری را انتخاب کنید</option>
                   {workstationTypes.map((cs) => (
                     <option key={cs.WorkstationId} value={cs.WorkstationId}>
                       {cs.WorkstationType}
                     </option>
                   ))}
-                </select>
+                </Form.Select>
               </div>
             </Form.Group>
 
@@ -134,6 +136,7 @@ const AssignWorkstationToProductionLine = (props) => {
               <Form.Label>* ترتیب ایستگاه کاری </Form.Label>
               <div className="form-group mb-2">
                 <input
+                  autoComplete="off"
                   type="text"
                   className="form-control form-control-md"
                   placeholder="ترتیب ایستگاه کاری را وارد کنید."
@@ -146,10 +149,18 @@ const AssignWorkstationToProductionLine = (props) => {
           </Modal.Body>
 
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              className="btn  m-2 w-25 "
+              variant="outline-danger"
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

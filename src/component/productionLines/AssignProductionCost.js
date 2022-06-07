@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AssignProductionCost = (props) => {
@@ -13,6 +12,7 @@ const AssignProductionCost = (props) => {
     ProductionLineId: productionLineProductState.ProductionLineId,
     ProductionCode: productionLineProductState.ProductionCode,
     ProductionCostId: "",
+    
   });
 
   const [show, setShow] = useState(false);
@@ -57,7 +57,7 @@ const AssignProductionCost = (props) => {
         }
       });
 
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success("شناسه با موفقیت به محصول تخصیص داده شد.");
       handleClose();
       props.loadProductionLine();
@@ -66,7 +66,7 @@ const AssignProductionCost = (props) => {
 
   return (
     <>
-      <Button variant="success" onClick={handleShow}>
+      <Button variant="outline-success" onClick={handleShow}>
         تخصیص شناسه محصول
       </Button>
 
@@ -74,7 +74,7 @@ const AssignProductionCost = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام خط تولید </Form.Label>
+              <Form.Label>* خط تولید </Form.Label>
               <Form.Control
                 disabled
                 type="text"
@@ -84,7 +84,7 @@ const AssignProductionCost = (props) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام محصول </Form.Label>
+              <Form.Label>* محصول </Form.Label>
               <Form.Control
                 type="text"
                 disabled
@@ -104,9 +104,7 @@ const AssignProductionCost = (props) => {
                 placeholder="  شناسه محصول را انتخاب کنید."
                 autoComplete="off"
               >
-                <option defaultValue readOnly>
-                  شناسه محصول را انتخاب کنید.
-                </option>
+                <option hidden>شناسه محصول را انتخاب کنید.</option>
                 {[]
                   .concat(productionCostsId)
                   .sort((a, b) => (a.Id < b.Id ? 1 : -1))
@@ -120,10 +118,18 @@ const AssignProductionCost = (props) => {
           </Modal.Body>
 
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              className="btn m-2 w-25 "
+              variant="outline-danger"
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

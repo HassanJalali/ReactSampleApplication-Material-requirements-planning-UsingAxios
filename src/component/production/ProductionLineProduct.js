@@ -1,21 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 import axios from "axios";
+import Pagination from "../paginationComponent/Pagination";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import "./Css/ProductionLineProduct.css";
 import AssignProductionCost from "../productionLines/AssignProductionCost";
 import AssignProductToProductionLine from "./AssignProductToProductionLine";
 
 const ProductionLineProduct = () => {
-  let navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productionsPerPage, setProductionsPerPage] = useState(10);
   const [productionLines, setProductionLines] = useState([]);
+
   const [productionLineName, setProductionLineName] = useState({
     ProductionLineName: "",
   });
+
   const [productionName, setProductionName] = useState({
     ProductionName: "",
   });
+
+  useEffect(() => {
+    loadProductionLine();
+  }, []);
+
+  const loadProductionLine = async () => {
+    const result = await axios.get(
+      "https://localhost:7295/api/ProductionLines/GetAssignedProduction"
+    );
+    var getData = result.data;
+    setProductionLines(getData);
+    setProductionLineName({ ProductionLineName: "" });
+    setProductionName({ ProductionName: "" });
+  };
 
   const { ProductionLineName } = productionLineName;
   const onInputChange = (e) => {
@@ -33,31 +50,20 @@ const ProductionLineProduct = () => {
     });
   };
 
-  useEffect(() => {
-    loadProductionLine();
-  }, []);
-
-  const loadProductionLine = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetAssignedProduction"
-    );
-    setProductionLines(result.data);
-    setProductionLineName({ ProductionLineName: "" });
-    setProductionName({ ProductionName: "" });
-  };
-
   const getAssignedProductionByProductionLineName = async () => {
     const result = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionLineName?productionLineName=${ProductionLineName}`
     );
-    setProductionLines(result.data);
+    var getData = result.data;
+    setProductionLines(getData);
   };
 
   const getAssignedProductionByProductionName = async () => {
     const result = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionName?productionName=${ProductionName}`
     );
-    setProductionLines(result.data);
+    var getData = result.data;
+    setProductionLines(getData);
   };
 
   const handleActiveManagement = async (ProductionLineId, ProductionId) => {
@@ -67,14 +73,36 @@ const ProductionLineProduct = () => {
     loadProductionLine();
   };
 
-  const deleteAssignedProduction = async (ProductionLineId, ProductionId) => {
-    var res = await axios.delete(
-      `https://localhost:7295/api/ProductionLines/DeleteAssignedProduction/${ProductionLineId}/${ProductionId}`
-    );
-    loadProductionLine();
-    if (res.status == "200") {
+  const deleteAssignedProduction = async (
+    ProductionLineId,
+    ProductionId,
+    ProductionCode
+  ) => {
+    var res = await axios
+      .delete(
+        `https://localhost:7295/api/ProductionLines/DeleteAssignedProduction/${ProductionLineId}/${ProductionId}/${ProductionCode}`
+      )
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
+
+    if (res.status === 200) {
       toast.success("محصول تخصیص داده شده با موفقیت از خط تولید حذف شد.");
+      loadProductionLine();
     }
+  };
+
+  /////Pagination
+  const indexOfLastPS = currentPage * productionsPerPage;
+  const indexOfFirstPS = indexOfLastPS - productionsPerPage;
+  const currentProductions = productionLines.slice(
+    indexOfFirstPS,
+    indexOfLastPS
+  );
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -99,13 +127,14 @@ const ProductionLineProduct = () => {
                 placeholder="نام خط تولید را وارد کنید."
               />
               <span className="input-group-btn">
-                <button
-                  className="btn btn-secondary"
+                <Button
+                  variant="outline-secondary"
+                  className="btn"
                   onClick={(e) => getAssignedProductionByProductionLineName(e)}
                   type="button"
                 >
                   جستوجو
-                </button>
+                </Button>
               </span>
             </div>
           </div>
@@ -116,6 +145,7 @@ const ProductionLineProduct = () => {
             <div className="input-group mt-2">
               <input
                 name="ProductionName"
+                autoComplete="off"
                 value={ProductionName}
                 onChange={(e) => onProductionNameChange(e)}
                 type="text"
@@ -123,13 +153,14 @@ const ProductionLineProduct = () => {
                 placeholder="نام محصول را وارد کنید."
               />
               <span className="input-group-btn">
-                <button
-                  className="btn btn-secondary"
+                <Button
+                  variant="outline-secondary"
+                  className="btn"
                   onClick={(e) => getAssignedProductionByProductionName(e)}
                   type="button"
                 >
                   جستوجو
-                </button>
+                </Button>
               </span>
             </div>
           </div>
@@ -139,13 +170,14 @@ const ProductionLineProduct = () => {
             </div>
             <div className=" mt-2">
               <span className="input-group-btn">
-                <button
-                  className="btn btn-secondary"
+                <Button
+                  variant="outline-secondary"
+                  className="btn"
                   onClick={(e) => loadProductionLine(e)}
                   type="button"
                 >
                   انتخاب همه
-                </button>
+                </Button>
               </span>
             </div>
           </div>
@@ -166,7 +198,7 @@ const ProductionLineProduct = () => {
           </tr>
         </thead>
         <tbody>
-          {productionLines.map((x, index) => (
+          {currentProductions.map((x, index) => (
             <tr key={x.ProductionId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -197,19 +229,31 @@ const ProductionLineProduct = () => {
                   {...x}
                   loadProductionLine={loadProductionLine}
                 />
-                <a
-                  className="btn btn-danger mx-2 px-3"
+                <Button
+                  variant="outline-danger"
+                  className="btn  mx-2 px-3"
                   onClick={() =>
-                    deleteAssignedProduction(x.ProductionLineId, x.ProductionId)
+                    deleteAssignedProduction(
+                      x.ProductionLineId,
+                      x.ProductionId,
+                      x.ProductionCode
+                    )
                   }
                 >
                   حذف
-                </a>
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div>
+        <Pagination
+          paginate={paginate}
+          postsPerPage={productionsPerPage}
+          totalPosts={productionLines.length}
+        />
+      </div>
     </div>
   );
 };

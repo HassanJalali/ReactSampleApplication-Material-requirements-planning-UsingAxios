@@ -1,16 +1,18 @@
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 const AddWorkstation = (props) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const [workstation, setWorkstation] = useState({
     WorkstationType: "",
   });
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setWorkstation({ WorkstationType: "" });
+    setShow(true);
+  };
 
   const { WorkstationType } = workstation;
   const onInputChange = (e) => {
@@ -33,7 +35,7 @@ const AddWorkstation = (props) => {
           toast.error(error.response.data);
         }
       });
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success("ایستگاه کاری با موفقیت ایجاد شد.");
       handleClose();
       props.loadWorkstations();
@@ -55,6 +57,7 @@ const AddWorkstation = (props) => {
               <div className="form-group mb-2">
                 <input
                   type="text"
+                  autoComplete="off"
                   className="form-control form-control-md"
                   placeholder="نام ایستگاه کاری را وارد کنید."
                   name="WorkstationType"
@@ -65,10 +68,18 @@ const AddWorkstation = (props) => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              className="btn  m-2 w-25 "
+              variant="outline-danger"
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn  m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

@@ -1,0 +1,15 @@
+.txtTruncet {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "NotoSansArabicSemiBold";
+  font-weight: bolder;
+}
+.customeTheme {
+  color: #ff6e00 !important;
+  background-color: green !important;
+  color: white !important;
+  opacity: 1 !important;
+  width: 300px !important;
+}

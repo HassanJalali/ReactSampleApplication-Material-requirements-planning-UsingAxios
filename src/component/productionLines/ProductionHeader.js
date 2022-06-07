@@ -1,26 +1,41 @@
 import { React, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import moment from "moment-jalaali";
+import ReactTooltip from "react-tooltip";
+import Pagination from "../paginationComponent/Pagination";
 import AddProductionHeader from "./AddProductionHeader";
+import "./Css/ProductionHeader.css";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productionHeadersPerPage, setProductionHeadersPerPage] = useState(10);
 
   useEffect(() => {
     LoadProductionHeaders();
   }, []);
 
   const LoadProductionHeaders = async () => {
-    const getData = axios.get(
-      "https://localhost:7295/api/ProductionLines/GetProductionHeaders"
+    const res = axios.get(
+      "https://localhost:7295/api/ProductionWorksheet/GetProductionWorksheets"
     );
-    var res = (await getData).data;
-    setProductionHeaders(res);
+    var getData = (await res).data;
+    setProductionHeaders(getData);
+  };
+
+  /////Pagination
+  const indexOfLastPH = currentPage * productionHeadersPerPage;
+  const indexOfFirstPH = indexOfLastPH - productionHeadersPerPage;
+  const currentProductionHeaders = productionHeaders.slice(
+    indexOfFirstPH,
+    indexOfLastPH
+  );
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
-    <div className="container">
+    <div className="container" id="txtTruncet">
       <AddProductionHeader LoadProductionHeaders={LoadProductionHeaders} />
 
       <table className="table table-bordered mt-3 table-hover text-center">
@@ -38,8 +53,8 @@ const ProductionHeader = () => {
           </tr>
         </thead>
         <tbody>
-          {productionHeaders.map((x, index) => (
-            <tr key={x.ProductionHeaderId}>
+          {currentProductionHeaders.map((x, index) => (
+            <tr key={x.ProductionWorksheetId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductId}</td>
               <td>{x.ProductionLineName}</td>
@@ -52,11 +67,28 @@ const ProductionHeader = () => {
                   "HH:mm:ss - jYYYY/jM/jD"
                 )}
               </td>
-              <td>{x.Description}</td>
+              <td className="txtTruncet">
+                {x.Description === "" ? "-" : x.Description}
+                {/* <ReactTooltip
+                  place="top"
+                  type="success"
+                  effect="float" data-tip="React-tooltip"
+                  className="customeTheme"
+                >
+                  {x.Description}
+                </ReactTooltip> */}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div>
+        <Pagination
+          paginate={paginate}
+          postsPerPage={productionHeadersPerPage}
+          totalPosts={productionHeaders.length}
+        />
+      </div>
     </div>
   );
 };

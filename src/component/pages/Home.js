@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment-jalaali";
+import Pagination from "../paginationComponent/Pagination";
 import AddProductionline from "../productionLines/AddProductionline";
 import "./Css/Home.css";
 import EditProductionLine from "../productionLines/EditProductionLine";
 
 const Home = () => {
   const [productionLines, setProductionLines] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productionLinesPerPage, setProductionLinesPerPage] = useState(10);
 
   useEffect(() => {
     loadProductionLine();
@@ -18,24 +21,49 @@ const Home = () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetProductionLines"
     );
-    setProductionLines(result.data);
+    var getData = result.data;
+    setProductionLines(getData);
   };
 
   const deleteProductionLine = async (id) => {
-    var res = await axios.delete(
-      `https://localhost:7295/api/ProductionLines/DeleteProductionLine/${id}`
-    );
-    loadProductionLine();
-    if (res.status == "200") {
+    var res = await axios
+      .delete(
+        `https://localhost:7295/api/ProductionLines/DeleteProductionLine/${id}`
+      )
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
+
+    if (res.status == 200) {
       toast.success("خط تولید با موفقیت حذف شد.");
+      loadProductionLine();
     }
   };
 
   const handleActiveManagement = async (id) => {
-    await axios.put(
-      `https://localhost:7295/api/ProductionLines/ActiveProductionline/${id}`
-    );
-    loadProductionLine();
+    var res = await axios
+      .put(
+        `https://localhost:7295/api/ProductionLines/ActiveProductionline/${id}`
+      )
+      .catch(function (error) {
+        if (error.response) {
+          toast.error(error.response.data);
+        }
+      });
+
+    if (res.status == 200) {
+      loadProductionLine();
+    }
+  };
+
+  ///Pagination
+  const indexOfLastPL = currentPage * productionLinesPerPage;
+  const indexOfFirstPL = indexOfLastPL - productionLinesPerPage;
+  const currentPosts = productionLines.slice(indexOfFirstPL, indexOfLastPL);
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -54,7 +82,7 @@ const Home = () => {
           </tr>
         </thead>
         <tbody>
-          {productionLines.map((x, index) => (
+          {currentPosts.map((x, index) => (
             <tr key={x.Id}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -87,17 +115,25 @@ const Home = () => {
                   {...x}
                   loadProductionLine={loadProductionLine}
                 />
-                <a
-                  className="btn btn-danger mx-2 px-3"
+                <Button
+                  variant="outline-danger"
+                  className="btn mx-2 px-3"
                   onClick={() => deleteProductionLine(x.Id)}
                 >
                   حذف
-                </a>
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div>
+        <Pagination
+          paginate={paginate}
+          postsPerPage={productionLinesPerPage}
+          totalPosts={productionLines.length}
+        />
+      </div>
     </div>
   );
 };

@@ -5,27 +5,37 @@ import { Modal, Form, Button } from "react-bootstrap";
 import "./Css/AssignProductToProductionLine.css";
 
 const AssignProductToProductionLine = (props) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const [assignProductToProductionline, SetAssignProductToProductionline] =
     useState({
       ProductionLineId: "",
       ProductionCode: "",
       ProductionName: "",
+      feedback: "", // valid-feedback or invalid-feedback,
+      cssClass: "", // is-valid or is-invalid
     });
+  const [productionLines, SetProductionLines] = useState([]);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    SetAssignProductToProductionline({
+      ProductionLineId: "",
+      ProductionCode: "",
+      ProductionName: "",
+    });
+    setShow(true);
+  };
 
   useEffect(() => {
     loadProductionLines();
   }, []);
 
-  const [productionLines, SetProductionLines] = useState([]);
   const loadProductionLines = async () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetProductionLineName"
     );
-    SetProductionLines(result.data);
+
+    var getData = result.data;
+    SetProductionLines(getData);
   };
 
   const getManuficturedProduction = async () => {
@@ -38,12 +48,16 @@ const AssignProductToProductionLine = (props) => {
         ProductionName: "محصولی با این کد وجود ندارد.",
         ProductionLineId: ProductionLineId,
         ProductionCode: "",
+        feedback: "invalid-feedback",
+        cssClass: "is-invalid",
       });
     } else {
       SetAssignProductToProductionline({
         ProductionName: `${GetInfo.Name}`,
         ProductionLineId: ProductionLineId,
         ProductionCode: ProductionCode,
+        feedback: "valid-feedback",
+        cssClass: "is-valid",
       });
     }
   };
@@ -80,7 +94,7 @@ const AssignProductToProductionLine = (props) => {
         }
       });
 
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success("محصول با موفقیت به خط تولید تخصیص داده شد.");
       handleClose();
       props.loadProductionLine();
@@ -97,8 +111,8 @@ const AssignProductToProductionLine = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام خط تولید </Form.Label>
-              <select
+              <Form.Label>* خط تولید </Form.Label>
+              <Form.Select
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionLineId"
@@ -106,15 +120,13 @@ const AssignProductToProductionLine = (props) => {
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
               >
-                <option defaultValue readOnly>
-                  نام خط تولید را انتخاب کنید.
-                </option>
+                <option hidden>نام خط تولید را انتخاب کنید.</option>
                 {productionLines.map((cs) => (
                   <option key={cs.Id} value={cs.Id}>
                     {cs.ProductionLineName}
                   </option>
                 ))}
-              </select>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* مرکز هرینه </Form.Label>
@@ -132,7 +144,7 @@ const AssignProductToProductionLine = (props) => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <div className="d-grid gap-2">
                 <Button
-                  variant="outline-primary"
+                  variant="warning"
                   size="md"
                   onClick={(e) => getManuficturedProduction(e)}
                 >
@@ -140,11 +152,10 @@ const AssignProductToProductionLine = (props) => {
                 </Button>
               </div>
             </Form.Group>
-
             <Form.Group controlId="exampleForm.ControlInput1">
               <div className="mt-2">
                 <span
-                  className="text-success w-50"
+                  className={`form-control ${assignProductToProductionline.cssClass}`}
                   name="ProductionName"
                   value={ProductionName}
                   placeholder={ProductionName}
@@ -156,10 +167,18 @@ const AssignProductToProductionLine = (props) => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              className="btn  m-2 w-25 "
+              variant="outline-danger"
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn  m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

@@ -2,13 +2,19 @@ import { React, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal, Button, Form } from "react-bootstrap";
+import "./Css/AddProductionHeader.css";
 
 const AddProductionHeader = (props) => {
-  const [productionHeader, setProductionHeader] = useState({});
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setProductionLineId("");
+    SetProductionCode("");
+    setProductionCostsId("");
+    SetUser("");
+    Setdescription("");
+    setShow(true);
+  };
 
   useEffect(() => {
     loadProductionLine();
@@ -28,6 +34,8 @@ const AddProductionHeader = (props) => {
   const [productionCode, SetProductionCode] = useState("");
   const onProductionLineChange = async (e) => {
     setProductionLineId(e.target.value);
+    SetProductionCode("");
+    setProductionCostsId("");
     const res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetActiveAssignedProductionByProductionLineId?productionLineId=${e.target.value}`
     );
@@ -42,7 +50,6 @@ const AddProductionHeader = (props) => {
     const res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetProductionCostIdByProductionLineIdAndProductionCode/${productionLineId}/${e.target.value}`
     );
-
     var getData = res.data;
     SetProductionCost(getData);
   };
@@ -50,16 +57,20 @@ const AddProductionHeader = (props) => {
   const onProductionCostIdChange = (e) => {
     setProductionCostsId(e.target.value);
   };
+
   const [userId, SetUser] = useState("");
   const onUserIdChange = (e) => {
     SetUser(e.target.value);
   };
+
   const [description, Setdescription] = useState("");
   const onTextAreaChange = (e) => {
     Setdescription(e.target.value);
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
+
     if (productionLineId === "") {
       return toast.error("نام خط تولید را وارد کنید.");
     }
@@ -73,20 +84,18 @@ const AddProductionHeader = (props) => {
       return toast.error(" کد پرسنلی را وارد کنید.");
     }
 
-    // var data = {
-    //   params: {
-    //     productionLineId,
-    //     productionCode,
-    //     productionCostId,
-    //     userId,
-    //     description,
-    //   },
-    // };
-    console.log("getdata", productionHeader);
+    let params = {
+      productionLineId: productionLineId,
+      productionCode: productionCode,
+      productionCostId: productionCostId,
+      userId: userId,
+      description: description,
+    };
+
     var res = await axios
       .post(
-        "https://localhost:7295/api/ProductionLines/CreateProductionHeader",
-        productionHeader
+        "https://localhost:7295/api/ProductionWorksheet/CreateProductionWorksheet",
+        params
       )
 
       .catch(function (error) {
@@ -94,8 +103,10 @@ const AddProductionHeader = (props) => {
           toast.error(error.response.data);
         }
       });
-    if (res.status == "200") {
-      return toast.success("سر برگ با موفقیت ایجاد شد.");
+    if (res.status == 200) {
+      toast.success("سر برگ با موفقیت ایجاد شد.");
+      handleClose();
+      props.LoadProductionHeaders();
     }
   };
 
@@ -109,8 +120,8 @@ const AddProductionHeader = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام خط تولید </Form.Label>
-              <select
+              <Form.Label>* خط تولید </Form.Label>
+              <Form.Select
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionLineId"
@@ -118,19 +129,17 @@ const AddProductionHeader = (props) => {
                 onChange={(e) => onProductionLineChange(e)}
                 autoComplete="off"
               >
-                <option defaultValue readOnly>
-                  نام خط تولید را انتخاب کنید.
-                </option>
+                <option hidden>نام خط تولید را انتخاب کنید.</option>
                 {productionLineName.map((cs) => (
                   <option key={cs.Id} value={cs.Id}>
                     {cs.ProductionLineName}
                   </option>
                 ))}
-              </select>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام محصول </Form.Label>
-              <select
+              <Form.Label>* محصول </Form.Label>
+              <Form.Select
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionCode"
@@ -138,19 +147,17 @@ const AddProductionHeader = (props) => {
                 onChange={(e) => onProductionChange(e)}
                 autoComplete="off"
               >
-                <option defaultValue readOnly>
-                  نام محصول را انتخاب کنید.
-                </option>
+                <option hidden>نام محصول را انتخاب کنید.</option>
                 {productionName.map((cs) => (
                   <option key={cs.ProductionCode} value={cs.ProductionCode}>
                     {cs.ProductionName}
                   </option>
                 ))}
-              </select>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* شناسه محصول </Form.Label>
-              <select
+              <Form.Select
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="productionCostId"
@@ -158,29 +165,31 @@ const AddProductionHeader = (props) => {
                 onChange={(e) => onProductionCostIdChange(e)}
                 autoComplete="off"
               >
+                <option hidden> شناسه محصول را انتخاب کنید.</option>
                 <option value={productionCost.ProductionCostId}>
-                  شناسه محصول : {productionCost.ProductionCostId} | قیمت محصول :
+                  شناسه محصول : {productionCost.ProductionCostId}| قیمت محصول :
                   {productionCost.ProductionCost}
                 </option>
-              </select>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* ثبات </Form.Label>
               <Form.Control
                 name="userId"
+                autoComplete="off"
                 value={userId}
                 onChange={(e) => onUserIdChange(e)}
                 type="number"
                 placeholder="کد پرسنلی را وارد کنید ."
+                onInput={(e) => (e.target.value = e.target.value.slice(0, 7))}
               />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label> * توضیحات</Form.Label>
+            <Form.Group className="mb-3">
+              <Form.Label> توضیحات</Form.Label>
               <Form.Control
-                name="Description"
+                id="dale"
+                name="description"
+                autoComplete="off"
                 value={description}
                 onChange={(e) => onTextAreaChange(e)}
                 placeholder="توضیحات الزامی نمی باشد, در صودت نیاز می توانید این قسمت را پر کنید."
@@ -191,10 +200,18 @@ const AddProductionHeader = (props) => {
           </Modal.Body>
 
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              className="btn  m-2 w-25 "
+              variant="outline-danger"
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn  m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

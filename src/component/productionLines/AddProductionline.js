@@ -11,19 +11,23 @@ const AddProductionline = (props) => {
   });
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+  const handleShow = () => {
+    setProductionline({ ProductionLineName: "", CostCenterName: "" });
+    setShow(true);
+  };
   const [costCenters, setCostCenters] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const req = await axios(
-        "https://localhost:7295/api/ProductionLines/GetCostCentersCode"
-      );
-      setCostCenters(req.data.Result);
-    };
-    fetchData();
+    getCostCenter();
   }, []);
+
+  const getCostCenter = async () => {
+    const req = await axios.get(
+      "https://localhost:7295/api/ProductionLines/GetCostCentersCode"
+    );
+    var getData = req.data.Result;
+    setCostCenters(getData);
+  };
 
   const { ProductionLineName, CostCenterName } = productionLine;
   const onInputChange = (e) => {
@@ -33,10 +37,10 @@ const AddProductionline = (props) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (productionLine.ProductionLineName == "") {
-      return toast.error(".نام خط تولید را وارد کنید");
+      return toast.error("نام خط تولید را وارد کنید.");
     }
     if (productionLine.CostCenterName == "") {
-      return toast.error(" .نام مرکز هزینه را انتخاب کنید");
+      return toast.error(" نام مرکز هزینه را انتخاب کنید.");
     }
 
     var res = await axios
@@ -49,7 +53,7 @@ const AddProductionline = (props) => {
           toast.error(error.response.data);
         }
       });
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success("خط تولید با موفقیت ایجاد شد.");
       handleClose();
       props.loadProductionLine();
@@ -66,20 +70,25 @@ const AddProductionline = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* نام خط تولید </Form.Label>
+              <Form.Label>* خط تولید </Form.Label>
               <Form.Control
+                autoComplete="off"
                 name="ProductionLineName"
                 value={ProductionLineName}
                 onChange={(e) => onInputChange(e)}
                 type="text"
                 placeholder="نام خط تولید را وارد کنید."
-                autoComplete="off"
               />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlInput1"
+              list="weekday"
+            >
               <Form.Label>* مرکز هرینه </Form.Label>
-              <select
+              <input
+                list="costCenter"
                 className="form-control form-control-md mb-2 "
                 type="text"
                 placeholder="نام مرکز هزینه را وارد کنید."
@@ -87,23 +96,29 @@ const AddProductionline = (props) => {
                 value={CostCenterName}
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
-              >
-                <option defaultValue readOnly>
-                  نام مرکز هزینه را وارد کنید.
-                </option>
+              />
+              <datalist id="costCenter">
                 {costCenters.map((cs) => (
                   <option key={cs.Id} value={cs.Name}>
                     {cs.Name}
                   </option>
                 ))}
-              </select>
+              </datalist>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer dir={"ltr"}>
-            <Button className="btn btn-danger m-2 w-25 " onClick={handleClose}>
+            <Button
+              variant="outline-danger"
+              className="btn m-2 w-25 "
+              onClick={handleClose}
+            >
               لغو
             </Button>
-            <Button type="submit" className="btn btn-primary m-2 w-25">
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn m-2 w-25"
+            >
               ثبت
             </Button>
           </Modal.Footer>

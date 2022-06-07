@@ -1,12 +1,16 @@
 import { React, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import moment from "moment-jalaali";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Pagination from "../paginationComponent/Pagination";
 import AssignWorkstationToProductionLine from "./AssignWorkstationToProductionLine";
+import { Button } from "react-bootstrap";
 
 const AssignWorkstationHome = () => {
   const [assignedWorkstations, setAssignedWorkstations] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [assignedWorkstationsPerPage, setAssignedWorkstationsPerPage] =
+    useState(10);
 
   useEffect(() => {
     loadAssignedWorkstations();
@@ -16,19 +20,31 @@ const AssignWorkstationHome = () => {
     const result = await axios.get(
       "https://localhost:7295/api/ProductionLines/GetAssignedWorkstations"
     );
-    setAssignedWorkstations(result.data);
+    var getData = result.data;
+    setAssignedWorkstations(getData);
   };
 
   const deleteAssignedWorkstation = async (ProductionLineId, Id) => {
     var res = await axios.delete(
       `https://localhost:7295/api/ProductionLines/DeleteAssignedWorkstation/${ProductionLineId}/${Id}`
     );
-    loadAssignedWorkstations();
-    if (res.status == "200") {
+    if (res.status == 200) {
       toast.success(
         "ایستگاه کاری تخصیص داده شده به خط تولید با موفقیت حذف شد."
       );
+      loadAssignedWorkstations();
     }
+  };
+
+  /////Pagination
+  const indexOfLastAWS = currentPage * assignedWorkstationsPerPage;
+  const indexOfFirstAWS = indexOfLastAWS - assignedWorkstationsPerPage;
+  const currentassignedWorkstations = assignedWorkstations.slice(
+    indexOfFirstAWS,
+    indexOfLastAWS
+  );
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
   return (
     <div className="container">
@@ -48,7 +64,7 @@ const AssignWorkstationHome = () => {
           </tr>
         </thead>
         <tbody>
-          {assignedWorkstations.map((x, index) => (
+          {currentassignedWorkstations.map((x, index) => (
             <tr key={x.Id}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -60,19 +76,27 @@ const AssignWorkstationHome = () => {
                 )}
               </td>
               <td>
-                <a
-                  className="btn btn-danger mx-2 px-3"
+                <Button
+                  variant="outline-danger"
+                  className="btn  mx-2 px-3"
                   onClick={() =>
                     deleteAssignedWorkstation(x.ProductionLineId, x.Id)
                   }
                 >
                   حذف
-                </a>
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div>
+        <Pagination
+          paginate={paginate}
+          postsPerPage={assignedWorkstationsPerPage}
+          totalPosts={assignedWorkstations.length}
+        />
+      </div>
     </div>
   );
 };
