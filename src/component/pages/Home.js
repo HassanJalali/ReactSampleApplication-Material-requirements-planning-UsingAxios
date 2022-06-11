@@ -70,7 +70,7 @@ const Home = () => {
     <div className="container">
       <AddProductionline loadProductionLine={loadProductionLine} />
 
-      <table className="table table-bordered mt-3 table-hover text-center">
+      <table className="table table-bordered  mt-3 table-hover text-center">
         <thead>
           <tr>
             <th scope="col">#</th>

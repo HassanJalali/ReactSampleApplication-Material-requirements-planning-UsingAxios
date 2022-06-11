@@ -8,7 +8,7 @@ import { Button } from "react-bootstrap";
 const WorkStation = () => {
   const [workstations, setWorkstations] = useState([]);
   const [number, setNumber] = useState(1); // No of pages
-  const [postPerPage] = useState(10);
+  const [postPerPage] = useState(1);
 
   useEffect(() => {
     loadWorkstations();

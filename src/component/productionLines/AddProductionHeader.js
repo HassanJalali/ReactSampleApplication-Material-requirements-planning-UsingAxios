@@ -10,7 +10,7 @@ const AddProductionHeader = (props) => {
   const handleShow = () => {
     setProductionLineId("");
     SetProductionCode("");
-    setProductionCostsId("");
+    setProductionCostId("");
     SetUser("");
     Setdescription("");
     setShow(true);
@@ -35,18 +35,20 @@ const AddProductionHeader = (props) => {
   const onProductionLineChange = async (e) => {
     setProductionLineId(e.target.value);
     SetProductionCode("");
-    setProductionCostsId("");
+    setProductionCostId("");
     const res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetActiveAssignedProductionByProductionLineId?productionLineId=${e.target.value}`
     );
     var getData = res.data;
     SetProductionName(getData);
   };
+  console.log("?", productionName);
 
   const [productionCost, SetProductionCost] = useState([]);
-  const [productionCostId, setProductionCostsId] = useState("");
+  const [productionCostId, setProductionCostId] = useState("");
   const onProductionChange = async (e) => {
     SetProductionCode(e.target.value);
+    setProductionCostId("");
     const res = await axios.get(
       `https://localhost:7295/api/ProductionLines/GetProductionCostIdByProductionLineIdAndProductionCode/${productionLineId}/${e.target.value}`
     );
@@ -55,7 +57,7 @@ const AddProductionHeader = (props) => {
   };
 
   const onProductionCostIdChange = (e) => {
-    setProductionCostsId(e.target.value);
+    setProductionCostId(e.target.value);
   };
 
   const [userId, SetUser] = useState("");
@@ -148,6 +150,7 @@ const AddProductionHeader = (props) => {
                 autoComplete="off"
               >
                 <option hidden>نام محصول را انتخاب کنید.</option>
+
                 {productionName.map((cs) => (
                   <option key={cs.ProductionCode} value={cs.ProductionCode}>
                     {cs.ProductionName}

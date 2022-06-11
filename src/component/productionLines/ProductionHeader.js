@@ -2,14 +2,14 @@ import { React, useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment-jalaali";
 import ReactTooltip from "react-tooltip";
+import ProductionWorksheetDetail from "./ProductionWorksheetDetail";
 import Pagination from "../paginationComponent/Pagination";
 import AddProductionHeader from "./AddProductionHeader";
 import "./Css/ProductionHeader.css";
+import ShowProductionWorksheetDetail from "./ShowProductionWorksheetDetail";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productionHeadersPerPage, setProductionHeadersPerPage] = useState(10);
 
   useEffect(() => {
     LoadProductionHeaders();
@@ -22,17 +22,7 @@ const ProductionHeader = () => {
     var getData = (await res).data;
     setProductionHeaders(getData);
   };
-
-  /////Pagination
-  const indexOfLastPH = currentPage * productionHeadersPerPage;
-  const indexOfFirstPH = indexOfLastPH - productionHeadersPerPage;
-  const currentProductionHeaders = productionHeaders.slice(
-    indexOfFirstPH,
-    indexOfLastPH
-  );
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  console.log("dasdasd", productionHeaders);
 
   return (
     <div className="container" id="txtTruncet">
@@ -50,10 +40,11 @@ const ProductionHeader = () => {
             <th scope="col"> شیفت کاری </th>
             <th scope="col">تاریخ</th>
             <th scope="col">توضیحات</th>
+            <th scope="col">عملیات</th>
           </tr>
         </thead>
         <tbody>
-          {currentProductionHeaders.map((x, index) => (
+          {productionHeaders.map((x, index) => (
             <tr key={x.ProductionWorksheetId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductId}</td>
@@ -68,27 +59,16 @@ const ProductionHeader = () => {
                 )}
               </td>
               <td className="txtTruncet">
-                {x.Description === "" ? "-" : x.Description}
-                {/* <ReactTooltip
-                  place="top"
-                  type="success"
-                  effect="float" data-tip="React-tooltip"
-                  className="customeTheme"
-                >
-                  {x.Description}
-                </ReactTooltip> */}
+                {x.Description === "" ? "ندارد" : x.Description}
+              </td>
+              <td>
+                <ProductionWorksheetDetail {...x} />
+                <ShowProductionWorksheetDetail {...x} />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div>
-        <Pagination
-          paginate={paginate}
-          postsPerPage={productionHeadersPerPage}
-          totalPosts={productionHeaders.length}
-        />
-      </div>
     </div>
   );
 };

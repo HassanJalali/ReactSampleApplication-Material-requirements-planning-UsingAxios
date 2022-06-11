@@ -1,18 +1,18 @@
 #addbtn {
-  background-color: #5867dd !important;
-  color: white;
-  border-radius: 20px;
+  background-color: white !important;
+  color: #5867dd;
+  border-radius: 5px;
 }
 #addbtn:hover {
-  background-color: white !important;
+  background-color: #5867dd !important;
   border: 1px dashed #5867dd !important;
-  color: #5867dd !important;
-  border-radius: 20px;
+  color: white !important;
 }
 
 table {
   color: #c1c4d6;
 }
+
 td {
   text-align: center !important;
   /* center checkbox horizontally */
