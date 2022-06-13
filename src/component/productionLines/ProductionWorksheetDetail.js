@@ -12,34 +12,31 @@ const ProductionWorksheetDetail = (props) => {
   const [productionHeaderId, setProductionHeaderId] = useState(
     productionHeaderState.ProductionWorksheetId
   );
-  console.log("?", productionHeaderId);
 
   const [userId, setUserId] = useState("");
   const onUserIdChange = async (e) => {
     setUserId(e.target.value);
   };
-  console.log("??", userId);
+
   const [numberOfRow, setNumberOfRow] = useState("");
   const onNumberOfRowChange = async (e) => {
     setNumberOfRow(e.target.value);
   };
-  console.log("???", numberOfRow);
-
-  const [scanStatus, setScanStatus] = useState(true);
-  const onSwitchChange = async (e) => {
-    setScanStatus(e.target.value);
-  };
-  console.log("????", scanStatus);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (userId === "") {
+      return toast.error("کد پرسنلی را وارد کنید.");
+    }
+    if (numberOfRow === "") {
+      return toast.error("تعداد ردیف ها را وارد کنید.");
+    }
     let params = {
-      productionHeaderId: productionHeaderId,
-      userId: userId,
-      numberOfRow: numberOfRow,
-      scanStatus: scanStatus,
+      ProductionWorksheetId: productionHeaderId,
+      RegistrarId: userId,
+      NumberOfRow: numberOfRow,
     };
-    console.log("dadad", params);
+
     var res = axios
       .post(
         "https://localhost:7295/api/ProductionWorksheet/CreateProductionWorksheetDetail",
@@ -51,9 +48,9 @@ const ProductionWorksheetDetail = (props) => {
         }
       });
     if (res.status == 200) {
-      toast.success("جزئیات محصول تولیدیس  با موفقیت ایجاد شد.");
+      toast.success("جزئیات محصول تولیدی  با موفقیت ایجاد شد.");
       handleClose();
-      props.LoadProductionHeaders();
+      //props.LoadProductionHeaders();
     }
   };
 
@@ -98,25 +95,6 @@ const ProductionWorksheetDetail = (props) => {
                 onChange={(e) => onNumberOfRowChange(e)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* وضعیت اسکن </Form.Label>
-              <div className="form-check form-switch ">
-                <input
-                  className="form-check-input m-auto align-middle "
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDefault"
-                  defaultChecked={true}
-                  value={scanStatus}
-                  onChange={(e) => onSwitchChange(e)}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor="flexSwitchCheckDefault"
-                ></label>
-              </div>
-            </Form.Group>
-
             <Modal.Footer dir={"ltr"}>
               <Button
                 variant="outline-danger"

@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from "react";
 import axios from "axios";
+import { getWorkstations } from "../../services/Workstation-Service";
 import moment from "moment-jalaali";
 import { toast } from "react-toastify";
 import AddWorkstation from "./AddWorkstation";
@@ -15,9 +16,11 @@ const WorkStation = () => {
   }, []);
 
   const loadWorkstations = async () => {
+    //const result = await getWorkstations();
     const result = await axios.get(
       "https://localhost:7295/api/Workstations/GetWorkstations"
     );
+    console.log("???", result);
     const getData = result.data;
     setWorkstations(getData);
   };
@@ -90,10 +93,10 @@ const WorkStation = () => {
         </table>
 
         <nav aria-label="Page navigation example">
-          <ul class="pagination justify-content-center">
-            <li class="page-item">
+          <ul className="pagination justify-content-center">
+            <li className="page-item">
               <a
-                class="page-link"
+                className="page-link"
                 href="#"
                 onClick={() => setNumber(number + 1)}
               >
@@ -103,9 +106,9 @@ const WorkStation = () => {
             {pageNumber.map((Elem) => {
               return (
                 <>
-                  <li class="page-item">
+                  <li className="page-item">
                     <a
-                      class="page-link"
+                      className="page-link"
                       href="#"
                       onClick={() => ChangePage(Elem)}
                     >
@@ -116,11 +119,11 @@ const WorkStation = () => {
               );
             })}
 
-            <li class="page-item ">
+            <li className="page-item ">
               <a
-                class="page-link"
+                className="page-link"
                 href="#"
-                tabindex="-1"
+                tabIndex="-1"
                 onClick={() => setNumber(number - 1)}
               >
                 قبلی

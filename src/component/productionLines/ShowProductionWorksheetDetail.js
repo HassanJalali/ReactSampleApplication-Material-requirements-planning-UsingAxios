@@ -5,24 +5,25 @@ import moment from "moment-jalaali";
 
 const ShowProductionWorksheetDetail = (props) => {
   const [productionHeaderState, setProductionHeaderState] = useState(props);
-  const [productionWorksheetDetail, setProductionWorksheetDetail] =
-    useState("");
+  const [productionWorksheetDetail, setProductionWorksheetDetail] = useState({
+    productionWorksheetDetail: productionHeaderState.ProductionWorksheetId,
+  });
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  useEffect(() => {
-    loadProductionWorksheetDetail();
-  });
+  // useEffect(() => {
+  //   loadProductionWorksheetDetail();
+  // });
 
-  const loadProductionWorksheetDetail = async () => {
-    const res = axios.get(
-      `https://localhost:7295/api/ProductionWorksheet/GetProductionWorksheetDetailById/
-        ${productionHeaderState.ProductionWorksheetDetailId}`
-    );
-    var getData = (await res).data;
-    setProductionWorksheetDetail(getData);
-  };
+  // const loadProductionWorksheetDetail = async () => {
+  //   const res = axios.get(
+  //     `https://localhost:7295/api/ProductionWorksheet/GetProductionWorksheetDetailByProductionWorksheetId/
+  //       ${productionHeaderState.ProductionWorksheetId}`
+  //   );
+  //   var getData = (await res).data;
+  //   setProductionWorksheetDetail(getData);
+  // };
 
   return (
     <>

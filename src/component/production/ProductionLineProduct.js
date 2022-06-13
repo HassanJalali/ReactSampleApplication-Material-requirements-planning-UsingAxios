@@ -206,7 +206,7 @@ const ProductionLineProduct = () => {
               <td>{x.ProductionCode}</td>
               <td>{x.ProductionCostId === 0 ? "ندارد" : x.ProductionCostId}</td>
               <td>{x.ProductionCost === 0 ? "ندارد" : x.ProductionCost}</td>
-              <td>
+              <td className="center">
                 <div className="form-check form-switch ">
                   <input
                     className="form-check-input m-auto align-middle "

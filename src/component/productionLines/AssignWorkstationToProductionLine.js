@@ -100,7 +100,7 @@ const AssignWorkstationToProductionLine = (props) => {
                   onChange={(e) => onInputChange(e)}
                   autoComplete="off"
                 >
-                  <option hidden>نام خط تولید را انتخاب کنید.</option>
+                  <option id="setdefaultcolor" hidden>نام خط تولید را انتخاب کنید.</option>
                   {productionLineName.map((cs) => (
                     <option key={cs.Id} value={cs.Id}>
                       {cs.ProductionLineName}

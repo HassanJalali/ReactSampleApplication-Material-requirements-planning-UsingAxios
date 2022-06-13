@@ -131,7 +131,9 @@ const AddProductionHeader = (props) => {
                 onChange={(e) => onProductionLineChange(e)}
                 autoComplete="off"
               >
-                <option hidden>نام خط تولید را انتخاب کنید.</option>
+                <option id="setdefaultcolor" hidden>
+                  نام خط تولید را انتخاب کنید.
+                </option>
                 {productionLineName.map((cs) => (
                   <option key={cs.Id} value={cs.Id}>
                     {cs.ProductionLineName}

@@ -11,5 +11,6 @@
   background-color: green !important;
   color: white !important;
   opacity: 1 !important;
-  width: 300px !important;
+  width: 500px !important;
+  word-wrap: break-word !important;
 }

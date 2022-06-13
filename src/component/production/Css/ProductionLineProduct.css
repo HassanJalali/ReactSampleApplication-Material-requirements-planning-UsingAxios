@@ -10,10 +10,3 @@
   display: inline-block !important;
   margin-left: 5px !important;
 }
-
-td {
-  text-align: center !important;
-  /* center checkbox horizontally */
-  vertical-align: middle !important;
-  /* center checkbox vertically */
-}

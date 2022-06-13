@@ -58,11 +58,23 @@ const ProductionHeader = () => {
                   "HH:mm:ss - jYYYY/jM/jD"
                 )}
               </td>
-              <td className="txtTruncet">
+
+              <td
+                data-tip={x.Description === "" ? "ندارد" : x.Description}
+                className="txtTruncet"
+              >
                 {x.Description === "" ? "ندارد" : x.Description}
+                <ReactTooltip
+                  className="customeTheme"
+                  place="top"
+                  effect="float"
+                />
               </td>
               <td>
-                <ProductionWorksheetDetail {...x} />
+                <ProductionWorksheetDetail
+                  {...x}
+                  LoadProductionHeaders={LoadProductionHeaders}
+                />
                 <ShowProductionWorksheetDetail {...x} />
               </td>
             </tr>
