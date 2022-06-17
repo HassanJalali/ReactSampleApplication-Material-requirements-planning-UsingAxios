@@ -1,17 +1,18 @@
-import axios from "axios";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { createProductionWorksheetDetail } from "../../services/ProductionWorksheet-Service";
 
 const ProductionWorksheetDetail = (props) => {
+  const [productionHeaderState, setProductionHeaderState] = useState(props);
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [productionHeaderState, setProductionHeaderState] = useState(props);
-  const [productionHeaderId, setProductionHeaderId] = useState(
-    productionHeaderState.ProductionWorksheetId
-  );
+
+  useEffect(() => {
+    setProductionHeaderState(props);
+  }, [props]);
 
   const [userId, setUserId] = useState("");
   const onUserIdChange = async (e) => {
@@ -31,14 +32,15 @@ const ProductionWorksheetDetail = (props) => {
     if (numberOfRow === "") {
       return toast.error("تعداد ردیف ها را وارد کنید.");
     }
+    
     let params = {
-      ProductionWorksheetId: productionHeaderId,
+      ProductionWorksheetId: productionHeaderState.ProductionWorksheetId,
       RegistrarId: userId,
       NumberOfRow: numberOfRow,
     };
 
-    var res = await createProductionWorksheetDetail(params);
-    if (res.status == 200) {
+    const request = await createProductionWorksheetDetail(params);
+    if (request.status == 200) {
       toast.success("جزئیات محصول تولیدی  با موفقیت ایجاد شد.");
       handleClose();
       props.LoadProductionHeaders();

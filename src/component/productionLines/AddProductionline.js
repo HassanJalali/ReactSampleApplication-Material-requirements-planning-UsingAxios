@@ -12,12 +12,14 @@ const AddProductionline = (props) => {
     ProductionLineName: "",
     CostCenterName: "",
   });
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setProductionline({ ProductionLineName: "", CostCenterName: "" });
     setShow(true);
   };
+
   const [costCenters, setCostCenters] = useState([]);
 
   useEffect(() => {
@@ -25,9 +27,9 @@ const AddProductionline = (props) => {
   }, []);
 
   const getCostCenter = async () => {
-    var req = await getCostCentersCode();
-    var getData = req.data.Result;
-    setCostCenters(getData);
+    const request = await getCostCentersCode();
+    const result = request.data.Result;
+    setCostCenters(result);
   };
 
   const { ProductionLineName, CostCenterName } = productionLine;
@@ -44,8 +46,8 @@ const AddProductionline = (props) => {
       return toast.error(" نام مرکز هزینه را انتخاب کنید.");
     }
 
-    var res = await createProductionLine(productionLine);
-    if (res.status == 200) {
+    const request = await createProductionLine(productionLine);
+    if (request.status == 200) {
       toast.success("خط تولید با موفقیت ایجاد شد.");
       handleClose();
       props.loadProductionLine();

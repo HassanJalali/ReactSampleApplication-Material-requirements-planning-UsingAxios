@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Modal, Form, Button } from "react-bootstrap";
-import "./Css/AssignProductToProductionLine.css";
 import {
   AssignProductionToProductionLine,
   getManufacturedProductInfo,
   getProductionLineName,
 } from "../../services/ProductionLines-Service";
+import "./Css/AssignProductToProductionLine.css";
 
 const AssignProductToProductionLine = (props) => {
   const [assignProductToProductionline, SetAssignProductToProductionline] =
@@ -34,15 +34,15 @@ const AssignProductToProductionLine = (props) => {
   }, []);
 
   const loadProductionLines = async () => {
-    var result = await getProductionLineName();
-    var getData = result.data;
-    SetProductionLines(getData);
+    const request = await getProductionLineName();
+    const result = request.data;
+    SetProductionLines(result);
   };
 
   const GetManuficturedProduction = async () => {
-    var res = await getManufacturedProductInfo(ProductionCode);
-    var GetInfo = res.data.Result;
-    if (GetInfo === null) {
+    const request = await getManufacturedProductInfo(ProductionCode);
+    const result = request.data.Result;
+    if (result === null) {
       SetAssignProductToProductionline({
         ProductionName: "محصولی با این کد وجود ندارد.",
         ProductionLineId: ProductionLineId,
@@ -52,7 +52,7 @@ const AssignProductToProductionLine = (props) => {
       });
     } else {
       SetAssignProductToProductionline({
-        ProductionName: `${GetInfo.Name}`,
+        ProductionName: `${result.Name}`,
         ProductionLineId: ProductionLineId,
         ProductionCode: ProductionCode,
         feedback: "valid-feedback",
@@ -82,11 +82,11 @@ const AssignProductToProductionLine = (props) => {
       return toast.error("نام محصول را وارد کنید.");
     }
 
-    var res = await AssignProductionToProductionLine(
+    const request = await AssignProductionToProductionLine(
       assignProductToProductionline
     );
 
-    if (res.status == 200) {
+    if (request.status == 200) {
       toast.success("محصول با موفقیت به خط تولید تخصیص داده شد.");
       handleClose();
       props.loadProductionLine();

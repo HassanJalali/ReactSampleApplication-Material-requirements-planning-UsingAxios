@@ -24,8 +24,8 @@ const AddWorkstation = (props) => {
     if (workstation.WorkstationType == "") {
       return toast.error("نام ایستگاه کاری را وارد کنید.");
     }
-    var res = await defineWorkstation(workstation);
-    if (res.status == 200) {
+    const request = await defineWorkstation(workstation);
+    if (request.status == 200) {
       toast.success("ایستگاه کاری با موفقیت ایجاد شد.");
       handleClose();
       props.loadWorkstations();

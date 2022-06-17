@@ -8,8 +8,8 @@ import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment-jalaali";
 import AddProductionline from "../productionLines/AddProductionline";
-import "./Css/Home.css";
 import EditProductionLine from "../productionLines/EditProductionLine";
+import "./Css/Home.css";
 
 const Home = () => {
   const [productionLines, setProductionLines] = useState([]);
@@ -19,22 +19,22 @@ const Home = () => {
   }, []);
 
   const loadProductionLine = async () => {
-    const result = await getProductionLines();
-    var getData = result.data;
-    setProductionLines(getData);
+    const request = await getProductionLines();
+    const result = request.data;
+    setProductionLines(result);
   };
 
-  const DeleteProductionLine = async (id) => {
-    var res = await deleteProductionLine(id);
-    if (res.status == 200) {
-      toast.success("خط تولید با موفقیت حذف شد.");
+  const handleActiveManagement = async (id) => {
+    const request = await activeProductionline(id);
+    if (request.status == 200) {
       loadProductionLine();
     }
   };
 
-  const handleActiveManagement = async (id) => {
-    var res = await activeProductionline(id);
-    if (res.status == 200) {
+  const DeleteProductionLine = async (id) => {
+    const request = await deleteProductionLine(id);
+    if (request.status == 200) {
+      toast.success("خط تولید با موفقیت حذف شد.");
       loadProductionLine();
     }
   };

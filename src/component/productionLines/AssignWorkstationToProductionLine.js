@@ -1,4 +1,3 @@
-import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Form, Button, Modal } from "react-bootstrap";
@@ -33,15 +32,15 @@ const AssignWorkstationToProductionLine = (props) => {
   }, []);
 
   const loadProductionLine = async () => {
-    var result = await getProductionLineName();
-    var getData = result.data;
-    SetProductionLineName(getData);
+    const request = await getProductionLineName();
+    const result = request.data;
+    SetProductionLineName(result);
   };
 
   const loadWorkstationTypes = async () => {
-    var result = await getWorkstations();
-    var getData = result.data;
-    setWorkstationTypes(getData);
+    const request = await getWorkstations();
+    const result = request.data;
+    setWorkstationTypes(result);
   };
 
   const { ProductionLineId, WorkstationTypeId, workstationOrder } =
@@ -64,8 +63,8 @@ const AssignWorkstationToProductionLine = (props) => {
     if (assignWorkstation.workstationOrder === "") {
       return toast.error("ترتیب ایستگاه کاری را انتخاب کنید.");
     }
-    var res = await assignWorkStationToProductionLine(assignWorkstation);
-    if (res.status == 200) {
+    const request = await assignWorkStationToProductionLine(assignWorkstation);
+    if (request.status == 200) {
       toast.success("ایستگاه کاری با موفقیت به خط تولید تخصیص داده شد.");
       handleClose();
       props.loadAssignedWorkstations();

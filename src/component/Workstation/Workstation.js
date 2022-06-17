@@ -16,14 +16,14 @@ const WorkStation = () => {
   }, []);
 
   const loadWorkstations = async () => {
-    const result = await getWorkstations();
-    const getData = result.data;
-    setWorkstations(getData);
+    const request = await getWorkstations();
+    const result = request.data;
+    setWorkstations(result);
   };
 
   const deleteWorkstation = async (WorkstationId) => {
-    var res = await deleteDefineWorkstation(WorkstationId);
-    if (res.status == 200) {
+    const request = await deleteDefineWorkstation(WorkstationId);
+    if (request.status == 200) {
       toast.success("ایستگاه کاری با موفقیت حذف شد.");
       loadWorkstations();
     }

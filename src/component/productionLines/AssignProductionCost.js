@@ -7,7 +7,7 @@ import {
 } from "../../services/ProductionLines-Service";
 
 const AssignProductionCost = (props) => {
-  const [productionLineProductState, setProductionLineProduct] =
+  const [productionLineProductState, setProductionLineProductState] =
     useState(props);
 
   const [productionCostsId, setProductionCostsId] = useState([]);
@@ -22,16 +22,16 @@ const AssignProductionCost = (props) => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    setProductionLineProduct(props);
+    setProductionLineProductState(props);
     LoadProductionCost();
   }, [props]);
 
   const LoadProductionCost = async () => {
-    var { data } = await getProductionCostId(
+    const { data } = await getProductionCostId(
       productionLineProductState.ProductionCode
     );
-    var getData = data.Result;
-    setProductionCostsId(getData);
+    const result = data.Result;
+    setProductionCostsId(result);
   };
 
   const { ProductionLineId, ProductionCostId } = assignProductionCostId;
@@ -48,9 +48,11 @@ const AssignProductionCost = (props) => {
       return toast.error("شناسه محصول را انتخاب کنید.");
     }
 
-    var res = await assignProductionCostIdToProduction(assignProductionCostId);
+    const request = await assignProductionCostIdToProduction(
+      assignProductionCostId
+    );
 
-    if (res.status == 200) {
+    if (request.status == 200) {
       toast.success("شناسه با موفقیت به محصول تخصیص داده شد.");
       handleClose();
       props.loadProductionLine();

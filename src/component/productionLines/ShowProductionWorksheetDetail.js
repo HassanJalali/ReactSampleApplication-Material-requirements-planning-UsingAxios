@@ -1,6 +1,5 @@
-import axios from "axios";
 import { React, useState, useEffect } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import moment from "moment-jalaali";
 import { getProductionWorksheetDetailByProductionWorksheetId } from "../../services/ProductionWorksheet-Service";
 
@@ -15,14 +14,15 @@ const ShowProductionWorksheetDetail = (props) => {
 
   useEffect(() => {
     loadProductionWorksheetDetail();
-  });
+    setProductionHeaderState(props);
+  }, [props]);
 
   const loadProductionWorksheetDetail = async () => {
-    var res = await getProductionWorksheetDetailByProductionWorksheetId(
+    const request = await getProductionWorksheetDetailByProductionWorksheetId(
       productionHeaderState.ProductionWorksheetId
     );
-    var getData = res.data;
-    setProductionWorksheetDetail(getData);
+    const result = request.data;
+    setProductionWorksheetDetail(result);
   };
 
   return (

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-import "./Css/ProductionLineProduct.css";
 import AssignProductionCost from "../productionLines/AssignProductionCost";
 import AssignProductToProductionLine from "./AssignProductToProductionLine";
 import {
@@ -11,6 +10,7 @@ import {
   getAssignedProductionsByProductionLineName,
   getAssignedProductionsByProductionName,
 } from "../../services/ProductionLines-Service";
+import "./Css/ProductionLineProduct.css";
 
 const ProductionLineProduct = () => {
   const [productionLines, setProductionLines] = useState([]);
@@ -27,9 +27,9 @@ const ProductionLineProduct = () => {
   }, []);
 
   const loadProductionLine = async () => {
-    const result = await getAssignedProduction();
-    var getData = result.data;
-    setProductionLines(getData);
+    const request = await getAssignedProduction();
+    const result = request.data;
+    setProductionLines(result);
     setProductionLineName({ ProductionLineName: "" });
     setProductionName({ ProductionName: "" });
   };
@@ -51,21 +51,26 @@ const ProductionLineProduct = () => {
   };
 
   const GetAssignedProductionByProductionLineName = async () => {
-    var result = await getAssignedProductionsByProductionLineName(
+    const request = await getAssignedProductionsByProductionLineName(
       ProductionLineName
     );
-    var getData = result.data;
-    setProductionLines(getData);
+    const result = request.data;
+    setProductionLines(result);
   };
 
   const GetAssignedProductionByProductionName = async () => {
-    var result = await getAssignedProductionsByProductionName(ProductionName);
-    var getData = result.data;
-    setProductionLines(getData);
+    const request = await getAssignedProductionsByProductionName(
+      ProductionName
+    );
+    const result = request.data;
+    setProductionLines(result);
   };
 
   const handleActiveManagement = async (ProductionLineId, ProductionId) => {
-    var res = await activeAssignedProduction(ProductionLineId, ProductionId);
+    const request = await activeAssignedProduction(
+      ProductionLineId,
+      ProductionId
+    );
     loadProductionLine();
   };
 
@@ -74,13 +79,13 @@ const ProductionLineProduct = () => {
     ProductionId,
     ProductionCode
   ) => {
-    var res = await deleteAssignedProduction(
+    const request = await deleteAssignedProduction(
       ProductionLineId,
       ProductionId,
       ProductionCode
     );
 
-    if (res.status === 200) {
+    if (request.status === 200) {
       toast.success("محصول تخصیص داده شده با موفقیت از خط تولید حذف شد.");
       loadProductionLine();
     }

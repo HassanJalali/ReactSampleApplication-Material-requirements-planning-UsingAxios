@@ -3,9 +3,9 @@ import moment from "moment-jalaali";
 import ReactTooltip from "react-tooltip";
 import ProductionWorksheetDetail from "./ProductionWorksheetDetail";
 import AddProductionHeader from "./AddProductionHeader";
-import "./Css/ProductionHeader.css";
 import ShowProductionWorksheetDetail from "./ShowProductionWorksheetDetail";
 import { getProductionWorksheets } from "../../services/ProductionWorksheet-Service";
+import "./Css/ProductionHeader.css";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
@@ -15,9 +15,9 @@ const ProductionHeader = () => {
   }, []);
 
   const LoadProductionHeaders = async () => {
-    const res = getProductionWorksheets();
-    var getData = (await res).data;
-    setProductionHeaders(getData);
+    const request = await getProductionWorksheets();
+    const result = request.data;
+    setProductionHeaders(result);
   };
 
   return (

@@ -1,12 +1,12 @@
 import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button, Form, Modal } from "react-bootstrap";
-import "./Css/EditProductioLine.css";
 import {
   getProductionLineById,
   getCostCentersCode,
   updateProductionLine,
 } from "../../services/ProductionLines-Service";
+import "./Css/EditProductioLine.css";
 
 const EditProductionLine = (props) => {
   const [productionLineState, setProductionLineState] = useState(props);
@@ -21,18 +21,19 @@ const EditProductionLine = (props) => {
   useEffect(() => {
     loadProductionLine();
     getCostCenter();
-  }, []);
+    setProductionLineState(props);
+  }, [props]);
 
   const loadProductionLine = async () => {
-    var result = await getProductionLineById(productionLineState.Id);
-    var getData = result.data;
-    setProductionline(getData);
+    const request = await getProductionLineById(productionLineState.Id);
+    const result = request.data;
+    setProductionline(result);
   };
 
   const getCostCenter = async () => {
-    var res = await getCostCentersCode();
-    var getData = res.data.Result;
-    setCostCenters(getData);
+    const request = await getCostCentersCode();
+    const result = request.data.Result;
+    setCostCenters(result);
   };
 
   const { ProductionLineName, CostCenterName } = productionLine;
@@ -45,11 +46,11 @@ const EditProductionLine = (props) => {
     if (productionLine.CostCenterName == "") {
       return toast.error(" .نام مرکز هزینه را انتخاب کنید");
     }
-    var res = await updateProductionLine(
+    const request = await updateProductionLine(
       productionLineState.Id,
       productionLine
     );
-    if (res.status == 200) {
+    if (request.status == 200) {
       toast.success("خط تولید با موفقیت ویرایش شد.");
       handleClose();
       props.loadProductionLine();

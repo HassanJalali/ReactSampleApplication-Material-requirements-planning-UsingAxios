@@ -16,14 +16,14 @@ const AssignWorkstationHome = () => {
   }, []);
 
   const loadAssignedWorkstations = async () => {
-    var result = await getAssignedWorkstations();
-    var getData = result.data;
-    setAssignedWorkstations(getData);
+    const request = await getAssignedWorkstations();
+    const result = request.data;
+    setAssignedWorkstations(result);
   };
 
   const DeleteAssignedWorkstation = async (ProductionLineId, Id) => {
-    var res = await deleteAssignedWorkstation(ProductionLineId, Id);
-    if (res.status == 200) {
+    const request = await deleteAssignedWorkstation(ProductionLineId, Id);
+    if (request.status == 200) {
       toast.success(
         "ایستگاه کاری تخصیص داده شده به خط تولید با موفقیت حذف شد."
       );
