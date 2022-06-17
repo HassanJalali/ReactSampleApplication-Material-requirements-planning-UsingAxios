@@ -2,6 +2,11 @@ import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Form, Button, Modal } from "react-bootstrap";
+import {
+  assignWorkStationToProductionLine,
+  getProductionLineName,
+} from "../../services/ProductionLines-Service";
+import { getWorkstations } from "../../services/Workstation-Service";
 
 const AssignWorkstationToProductionLine = (props) => {
   const [assignWorkstation, setAssignWorkstation] = useState({
@@ -28,17 +33,13 @@ const AssignWorkstationToProductionLine = (props) => {
   }, []);
 
   const loadProductionLine = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetProductionLineName"
-    );
+    var result = await getProductionLineName();
     var getData = result.data;
     SetProductionLineName(getData);
   };
 
   const loadWorkstationTypes = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/Workstations/GetWorkstations"
-    );
+    var result = await getWorkstations();
     var getData = result.data;
     setWorkstationTypes(getData);
   };
@@ -63,16 +64,7 @@ const AssignWorkstationToProductionLine = (props) => {
     if (assignWorkstation.workstationOrder === "") {
       return toast.error("ترتیب ایستگاه کاری را انتخاب کنید.");
     }
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/ProductionLines/AssignWorkStationToProductionLine",
-        assignWorkstation
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await assignWorkStationToProductionLine(assignWorkstation);
     if (res.status == 200) {
       toast.success("ایستگاه کاری با موفقیت به خط تولید تخصیص داده شد.");
       handleClose();
@@ -100,7 +92,9 @@ const AssignWorkstationToProductionLine = (props) => {
                   onChange={(e) => onInputChange(e)}
                   autoComplete="off"
                 >
-                  <option id="setdefaultcolor" hidden>نام خط تولید را انتخاب کنید.</option>
+                  <option id="setdefaultcolor" hidden>
+                    نام خط تولید را انتخاب کنید.
+                  </option>
                   {productionLineName.map((cs) => (
                     <option key={cs.Id} value={cs.Id}>
                       {cs.ProductionLineName}

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import axios from "axios";
-import Pagination from "../paginationComponent/Pagination";
 import { toast } from "react-toastify";
 import "./Css/ProductionLineProduct.css";
 import AssignProductionCost from "../productionLines/AssignProductionCost";
 import AssignProductToProductionLine from "./AssignProductToProductionLine";
+import {
+  activeAssignedProduction,
+  deleteAssignedProduction,
+  getAssignedProduction,
+  getAssignedProductionsByProductionLineName,
+  getAssignedProductionsByProductionName,
+} from "../../services/ProductionLines-Service";
 
 const ProductionLineProduct = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productionsPerPage, setProductionsPerPage] = useState(10);
   const [productionLines, setProductionLines] = useState([]);
-
   const [productionLineName, setProductionLineName] = useState({
     ProductionLineName: "",
   });
@@ -25,9 +27,7 @@ const ProductionLineProduct = () => {
   }, []);
 
   const loadProductionLine = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetAssignedProduction"
-    );
+    const result = await getAssignedProduction();
     var getData = result.data;
     setProductionLines(getData);
     setProductionLineName({ ProductionLineName: "" });
@@ -50,59 +50,40 @@ const ProductionLineProduct = () => {
     });
   };
 
-  const getAssignedProductionByProductionLineName = async () => {
-    const result = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionLineName?productionLineName=${ProductionLineName}`
+  const GetAssignedProductionByProductionLineName = async () => {
+    var result = await getAssignedProductionsByProductionLineName(
+      ProductionLineName
     );
     var getData = result.data;
     setProductionLines(getData);
   };
 
-  const getAssignedProductionByProductionName = async () => {
-    const result = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetAssignedProductionsByProductionName?productionName=${ProductionName}`
-    );
+  const GetAssignedProductionByProductionName = async () => {
+    var result = await getAssignedProductionsByProductionName(ProductionName);
     var getData = result.data;
     setProductionLines(getData);
   };
 
   const handleActiveManagement = async (ProductionLineId, ProductionId) => {
-    var res = await axios.put(
-      `https://localhost:7295/api/ProductionLines/ActiveAssignedProduction/${ProductionLineId}/${ProductionId}`
-    );
+    var res = await activeAssignedProduction(ProductionLineId, ProductionId);
     loadProductionLine();
   };
 
-  const deleteAssignedProduction = async (
+  const DeleteAssignedProduction = async (
     ProductionLineId,
     ProductionId,
     ProductionCode
   ) => {
-    var res = await axios
-      .delete(
-        `https://localhost:7295/api/ProductionLines/DeleteAssignedProduction/${ProductionLineId}/${ProductionId}/${ProductionCode}`
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await deleteAssignedProduction(
+      ProductionLineId,
+      ProductionId,
+      ProductionCode
+    );
 
     if (res.status === 200) {
       toast.success("محصول تخصیص داده شده با موفقیت از خط تولید حذف شد.");
       loadProductionLine();
     }
-  };
-
-  /////Pagination
-  const indexOfLastPS = currentPage * productionsPerPage;
-  const indexOfFirstPS = indexOfLastPS - productionsPerPage;
-  const currentProductions = productionLines.slice(
-    indexOfFirstPS,
-    indexOfLastPS
-  );
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   return (
@@ -130,7 +111,7 @@ const ProductionLineProduct = () => {
                 <Button
                   variant="outline-secondary"
                   className="btn"
-                  onClick={(e) => getAssignedProductionByProductionLineName(e)}
+                  onClick={(e) => GetAssignedProductionByProductionLineName(e)}
                   type="button"
                 >
                   جستوجو
@@ -156,7 +137,7 @@ const ProductionLineProduct = () => {
                 <Button
                   variant="outline-secondary"
                   className="btn"
-                  onClick={(e) => getAssignedProductionByProductionName(e)}
+                  onClick={(e) => GetAssignedProductionByProductionName(e)}
                   type="button"
                 >
                   جستوجو
@@ -198,7 +179,7 @@ const ProductionLineProduct = () => {
           </tr>
         </thead>
         <tbody>
-          {currentProductions.map((x, index) => (
+          {productionLines.map((x, index) => (
             <tr key={x.ProductionId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -233,7 +214,7 @@ const ProductionLineProduct = () => {
                   variant="outline-danger"
                   className="btn  mx-2 px-3"
                   onClick={() =>
-                    deleteAssignedProduction(
+                    DeleteAssignedProduction(
                       x.ProductionLineId,
                       x.ProductionId,
                       x.ProductionCode
@@ -247,13 +228,6 @@ const ProductionLineProduct = () => {
           ))}
         </tbody>
       </table>
-      <div>
-        <Pagination
-          paginate={paginate}
-          postsPerPage={productionsPerPage}
-          totalPosts={productionLines.length}
-        />
-      </div>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import { React, useEffect, useState } from "react";
-import axios from "axios";
-import { getWorkstations } from "../../services/Workstation-Service";
+import {
+  deleteDefineWorkstation,
+  getWorkstations,
+} from "../../services/Workstation-Service";
 import moment from "moment-jalaali";
 import { toast } from "react-toastify";
 import AddWorkstation from "./AddWorkstation";
@@ -8,52 +10,25 @@ import { Button } from "react-bootstrap";
 
 const WorkStation = () => {
   const [workstations, setWorkstations] = useState([]);
-  const [number, setNumber] = useState(1); // No of pages
-  const [postPerPage] = useState(1);
 
   useEffect(() => {
     loadWorkstations();
   }, []);
 
   const loadWorkstations = async () => {
-    //const result = await getWorkstations();
-    const result = await axios.get(
-      "https://localhost:7295/api/Workstations/GetWorkstations"
-    );
-    console.log("???", result);
+    const result = await getWorkstations();
     const getData = result.data;
     setWorkstations(getData);
   };
 
   const deleteWorkstation = async (WorkstationId) => {
-    var res = await axios
-      .delete(
-        `https://localhost:7295/api/Workstations/DeleteDefineWorkstation/${WorkstationId}`
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
-
+    var res = await deleteDefineWorkstation(WorkstationId);
     if (res.status == 200) {
       toast.success("ایستگاه کاری با موفقیت حذف شد.");
       loadWorkstations();
     }
   };
 
-  const lastPost = number * postPerPage;
-  const firstPost = lastPost - postPerPage;
-  const currentPost = workstations.slice(firstPost, lastPost);
-  const pageNumber = [];
-
-  for (let i = 1; i <= Math.ceil(workstations.length / postPerPage); i++) {
-    pageNumber.push(i);
-  }
-
-  const ChangePage = (pageNumber) => {
-    setNumber(pageNumber);
-  };
   return (
     <>
       <div className="container">
@@ -69,7 +44,7 @@ const WorkStation = () => {
             </tr>
           </thead>
           <tbody>
-            {currentPost.map((x, index) => (
+            {workstations.map((x, index) => (
               <tr key={x.WorkstationId}>
                 <th scope="row">{index + 1}</th>
                 <td>{x.WorkstationType}</td>
@@ -91,46 +66,6 @@ const WorkStation = () => {
             ))}
           </tbody>
         </table>
-
-        <nav aria-label="Page navigation example">
-          <ul className="pagination justify-content-center">
-            <li className="page-item">
-              <a
-                className="page-link"
-                href="#"
-                onClick={() => setNumber(number + 1)}
-              >
-                بعدی
-              </a>
-            </li>
-            {pageNumber.map((Elem) => {
-              return (
-                <>
-                  <li className="page-item">
-                    <a
-                      className="page-link"
-                      href="#"
-                      onClick={() => ChangePage(Elem)}
-                    >
-                      {Elem}
-                    </a>
-                  </li>
-                </>
-              );
-            })}
-
-            <li className="page-item ">
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                onClick={() => setNumber(number - 1)}
-              >
-                قبلی
-              </a>
-            </li>
-          </ul>
-        </nav>
       </div>
     </>
   );

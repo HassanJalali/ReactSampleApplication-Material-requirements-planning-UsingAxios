@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
-import axios from "axios";
+import { defineWorkstation } from "../../services/Workstation-Service";
 
 const AddWorkstation = (props) => {
   const [workstation, setWorkstation] = useState({
@@ -24,17 +24,7 @@ const AddWorkstation = (props) => {
     if (workstation.WorkstationType == "") {
       return toast.error("نام ایستگاه کاری را وارد کنید.");
     }
-
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/Workstations/DefineWorkstation",
-        workstation
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await defineWorkstation(workstation);
     if (res.status == 200) {
       toast.success("ایستگاه کاری با موفقیت ایجاد شد.");
       handleClose();

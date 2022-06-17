@@ -1,8 +1,12 @@
 import { React, useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { Button, Form, Modal } from "react-bootstrap";
 import "./Css/EditProductioLine.css";
+import {
+  getProductionLineById,
+  getCostCentersCode,
+  updateProductionLine,
+} from "../../services/ProductionLines-Service";
 
 const EditProductionLine = (props) => {
   const [productionLineState, setProductionLineState] = useState(props);
@@ -20,18 +24,14 @@ const EditProductionLine = (props) => {
   }, []);
 
   const loadProductionLine = async () => {
-    const result = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetProductionLineById/${productionLineState.Id}`
-    );
+    var result = await getProductionLineById(productionLineState.Id);
     var getData = result.data;
     setProductionline(getData);
   };
 
   const getCostCenter = async () => {
-    const req = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetCostCentersCode"
-    );
-    var getData = req.data.Result;
+    var res = await getCostCentersCode();
+    var getData = res.data.Result;
     setCostCenters(getData);
   };
 
@@ -45,17 +45,10 @@ const EditProductionLine = (props) => {
     if (productionLine.CostCenterName == "") {
       return toast.error(" .نام مرکز هزینه را انتخاب کنید");
     }
-
-    var res = await axios
-      .put(
-        `https://localhost:7295/api/ProductionLines/UpdateProductionLine/${productionLineState.Id}`,
-        productionLine
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await updateProductionLine(
+      productionLineState.Id,
+      productionLine
+    );
     if (res.status == 200) {
       toast.success("خط تولید با موفقیت ویرایش شد.");
       handleClose();
@@ -97,11 +90,6 @@ const EditProductionLine = (props) => {
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
               />
-              {/* {costCenters.map((cs) => (
-                  <option key={cs.Id} value={cs.Name}>
-                    {cs.Name}
-                  </option>
-                ))} */}
               <datalist id="costCenter">
                 {costCenters.map((cs) => (
                   <option key={cs.Id} value={cs.Name}>

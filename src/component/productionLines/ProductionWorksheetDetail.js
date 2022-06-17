@@ -2,13 +2,13 @@ import axios from "axios";
 import { React, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { createProductionWorksheetDetail } from "../../services/ProductionWorksheet-Service";
 
 const ProductionWorksheetDetail = (props) => {
-  const [productionHeaderState, setProductionHeaderState] = useState(props);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const [productionHeaderState, setProductionHeaderState] = useState(props);
   const [productionHeaderId, setProductionHeaderId] = useState(
     productionHeaderState.ProductionWorksheetId
   );
@@ -37,20 +37,11 @@ const ProductionWorksheetDetail = (props) => {
       NumberOfRow: numberOfRow,
     };
 
-    var res = axios
-      .post(
-        "https://localhost:7295/api/ProductionWorksheet/CreateProductionWorksheetDetail",
-        params
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await createProductionWorksheetDetail(params);
     if (res.status == 200) {
       toast.success("جزئیات محصول تولیدی  با موفقیت ایجاد شد.");
       handleClose();
-      //props.LoadProductionHeaders();
+      props.LoadProductionHeaders();
     }
   };
 
@@ -95,23 +86,23 @@ const ProductionWorksheetDetail = (props) => {
                 onChange={(e) => onNumberOfRowChange(e)}
               />
             </Form.Group>
-            <Modal.Footer dir={"ltr"}>
-              <Button
-                variant="outline-danger"
-                className="btn  m-2 w-25 "
-                onClick={handleClose}
-              >
-                لغو
-              </Button>
-              <Button
-                type="submit"
-                variant="outline-primary"
-                className="btn m-2 w-25"
-              >
-                ثبت
-              </Button>
-            </Modal.Footer>
           </Modal.Body>
+          <Modal.Footer dir={"ltr"}>
+            <Button
+              variant="outline-danger"
+              className="btn  m-2 w-25 "
+              onClick={handleClose}
+            >
+              لغو
+            </Button>
+            <Button
+              type="submit"
+              variant="outline-primary"
+              className="btn m-2 w-25"
+            >
+              ثبت
+            </Button>
+          </Modal.Footer>
         </Form>
       </Modal>
     </>

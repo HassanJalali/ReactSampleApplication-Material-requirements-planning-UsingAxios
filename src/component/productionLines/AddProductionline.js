@@ -1,7 +1,10 @@
-import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
+import {
+  createProductionLine,
+  getCostCentersCode,
+} from "../../services/ProductionLines-Service";
 import "./Css/AddProductionline.css";
 
 const AddProductionline = (props) => {
@@ -22,9 +25,7 @@ const AddProductionline = (props) => {
   }, []);
 
   const getCostCenter = async () => {
-    const req = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetCostCentersCode"
-    );
+    var req = await getCostCentersCode();
     var getData = req.data.Result;
     setCostCenters(getData);
   };
@@ -43,16 +44,7 @@ const AddProductionline = (props) => {
       return toast.error(" نام مرکز هزینه را انتخاب کنید.");
     }
 
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/ProductionLines/CreateProductionLine",
-        productionLine
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await createProductionLine(productionLine);
     if (res.status == 200) {
       toast.success("خط تولید با موفقیت ایجاد شد.");
       handleClose();

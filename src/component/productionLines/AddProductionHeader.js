@@ -3,6 +3,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal, Button, Form } from "react-bootstrap";
 import "./Css/AddProductionHeader.css";
+import {
+  getActiveAssignedProductionByProductionLineId,
+  getProductionCostIdByProductionLineIdAndProductionCode,
+  getProductionLineName,
+} from "../../services/ProductionLines-Service";
+import { createProductionWorksheet } from "../../services/ProductionWorksheet-Service";
 
 const AddProductionHeader = (props) => {
   const [show, setShow] = useState(false);
@@ -23,9 +29,7 @@ const AddProductionHeader = (props) => {
   const [productionLineName, SetProductionLineName] = useState([]);
   const [productionLineId, setProductionLineId] = useState("");
   const loadProductionLine = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetProductionLineName"
-    );
+    var result = await getProductionLineName();
     var getData = result.data;
     SetProductionLineName(getData);
   };
@@ -36,8 +40,9 @@ const AddProductionHeader = (props) => {
     setProductionLineId(e.target.value);
     SetProductionCode("");
     setProductionCostId("");
-    const res = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetActiveAssignedProductionByProductionLineId?productionLineId=${e.target.value}`
+
+    var res = await getActiveAssignedProductionByProductionLineId(
+      e.target.value
     );
     var getData = res.data;
     SetProductionName(getData);
@@ -49,8 +54,9 @@ const AddProductionHeader = (props) => {
   const onProductionChange = async (e) => {
     SetProductionCode(e.target.value);
     setProductionCostId("");
-    const res = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetProductionCostIdByProductionLineIdAndProductionCode/${productionLineId}/${e.target.value}`
+    var res = await getProductionCostIdByProductionLineIdAndProductionCode(
+      productionLineId,
+      e.target.value
     );
     var getData = res.data;
     SetProductionCost(getData);
@@ -94,17 +100,7 @@ const AddProductionHeader = (props) => {
       description: description,
     };
 
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/ProductionWorksheet/CreateProductionWorksheet",
-        params
-      )
-
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await createProductionWorksheet(params);
     if (res.status == 200) {
       toast.success("سر برگ با موفقیت ایجاد شد.");
       handleClose();

@@ -1,12 +1,11 @@
 import { React, useEffect, useState } from "react";
-import axios from "axios";
 import moment from "moment-jalaali";
 import ReactTooltip from "react-tooltip";
 import ProductionWorksheetDetail from "./ProductionWorksheetDetail";
-import Pagination from "../paginationComponent/Pagination";
 import AddProductionHeader from "./AddProductionHeader";
 import "./Css/ProductionHeader.css";
 import ShowProductionWorksheetDetail from "./ShowProductionWorksheetDetail";
+import { getProductionWorksheets } from "../../services/ProductionWorksheet-Service";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
@@ -16,13 +15,10 @@ const ProductionHeader = () => {
   }, []);
 
   const LoadProductionHeaders = async () => {
-    const res = axios.get(
-      "https://localhost:7295/api/ProductionWorksheet/GetProductionWorksheets"
-    );
+    const res = getProductionWorksheets();
     var getData = (await res).data;
     setProductionHeaders(getData);
   };
-  console.log("dasdasd", productionHeaders);
 
   return (
     <div className="container" id="txtTruncet">

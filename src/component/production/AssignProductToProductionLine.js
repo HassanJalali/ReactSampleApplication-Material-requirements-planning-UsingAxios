@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal, Form, Button } from "react-bootstrap";
 import "./Css/AssignProductToProductionLine.css";
+import {
+  AssignProductionToProductionLine,
+  getManufacturedProductInfo,
+  getProductionLineName,
+} from "../../services/ProductionLines-Service";
 
 const AssignProductToProductionLine = (props) => {
   const [assignProductToProductionline, SetAssignProductToProductionline] =
@@ -30,18 +34,13 @@ const AssignProductToProductionLine = (props) => {
   }, []);
 
   const loadProductionLines = async () => {
-    const result = await axios.get(
-      "https://localhost:7295/api/ProductionLines/GetProductionLineName"
-    );
-
+    var result = await getProductionLineName();
     var getData = result.data;
     SetProductionLines(getData);
   };
 
-  const getManuficturedProduction = async () => {
-    var res = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetManufacturedProductInfo?ProductionCode=${ProductionCode}`
-    );
+  const GetManuficturedProduction = async () => {
+    var res = await getManufacturedProductInfo(ProductionCode);
     var GetInfo = res.data.Result;
     if (GetInfo === null) {
       SetAssignProductToProductionline({
@@ -83,16 +82,9 @@ const AssignProductToProductionLine = (props) => {
       return toast.error("نام محصول را وارد کنید.");
     }
 
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/ProductionLines/AssignProductionToProductionLine",
-        assignProductToProductionline
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await AssignProductionToProductionLine(
+      assignProductToProductionline
+    );
 
     if (res.status == 200) {
       toast.success("محصول با موفقیت به خط تولید تخصیص داده شد.");
@@ -146,7 +138,7 @@ const AssignProductToProductionLine = (props) => {
                 <Button
                   variant="warning"
                   size="md"
-                  onClick={(e) => getManuficturedProduction(e)}
+                  onClick={(e) => GetManuficturedProduction(e)}
                 >
                   بررسی صحت کد محصول
                 </Button>

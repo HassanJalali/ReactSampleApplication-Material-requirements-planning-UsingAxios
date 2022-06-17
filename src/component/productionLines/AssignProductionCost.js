@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  assignProductionCostIdToProduction,
+  getProductionCostId,
+} from "../../services/ProductionLines-Service";
 
 const AssignProductionCost = (props) => {
   const [productionLineProductState, setProductionLineProduct] =
@@ -12,7 +15,6 @@ const AssignProductionCost = (props) => {
     ProductionLineId: productionLineProductState.ProductionLineId,
     ProductionCode: productionLineProductState.ProductionCode,
     ProductionCostId: "",
-    
   });
 
   const [show, setShow] = useState(false);
@@ -25,8 +27,8 @@ const AssignProductionCost = (props) => {
   }, [props]);
 
   const LoadProductionCost = async () => {
-    var { data } = await axios.get(
-      `https://localhost:7295/api/ProductionLines/GetProductionCostId?productionCode=${productionLineProductState.ProductionCode}`
+    var { data } = await getProductionCostId(
+      productionLineProductState.ProductionCode
     );
     var getData = data.Result;
     setProductionCostsId(getData);
@@ -46,16 +48,7 @@ const AssignProductionCost = (props) => {
       return toast.error("شناسه محصول را انتخاب کنید.");
     }
 
-    var res = await axios
-      .post(
-        "https://localhost:7295/api/ProductionLines/AssignProductionCostIdToProduction",
-        assignProductionCostId
-      )
-      .catch(function (error) {
-        if (error.response) {
-          toast.error(error.response.data);
-        }
-      });
+    var res = await assignProductionCostIdToProduction(assignProductionCostId);
 
     if (res.status == 200) {
       toast.success("شناسه با موفقیت به محصول تخصیص داده شد.");

@@ -2,6 +2,7 @@ import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import moment from "moment-jalaali";
+import { getProductionWorksheetDetailByProductionWorksheetId } from "../../services/ProductionWorksheet-Service";
 
 const ShowProductionWorksheetDetail = (props) => {
   const [productionHeaderState, setProductionHeaderState] = useState(props);
@@ -12,18 +13,17 @@ const ShowProductionWorksheetDetail = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // useEffect(() => {
-  //   loadProductionWorksheetDetail();
-  // });
+  useEffect(() => {
+    loadProductionWorksheetDetail();
+  });
 
-  // const loadProductionWorksheetDetail = async () => {
-  //   const res = axios.get(
-  //     `https://localhost:7295/api/ProductionWorksheet/GetProductionWorksheetDetailByProductionWorksheetId/
-  //       ${productionHeaderState.ProductionWorksheetId}`
-  //   );
-  //   var getData = (await res).data;
-  //   setProductionWorksheetDetail(getData);
-  // };
+  const loadProductionWorksheetDetail = async () => {
+    var res = await getProductionWorksheetDetailByProductionWorksheetId(
+      productionHeaderState.ProductionWorksheetId
+    );
+    var getData = res.data;
+    setProductionWorksheetDetail(getData);
+  };
 
   return (
     <>
@@ -31,6 +31,7 @@ const ShowProductionWorksheetDetail = (props) => {
         variant="outline-success"
         className="btn  mx-2 px-3"
         onClick={handleShow}
+        disabled={productionHeaderState.HasDetails === false}
       >
         مشاهده جزئیات
       </Button>
