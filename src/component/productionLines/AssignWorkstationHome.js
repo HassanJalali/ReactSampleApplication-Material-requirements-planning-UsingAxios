@@ -7,9 +7,13 @@ import {
   deleteAssignedWorkstation,
   getAssignedWorkstations,
 } from "../../services/ProductionLines-Service";
+import { Pagination } from "@material-ui/lab";
+import usePagination from "../Pagination/Pagination";
 
 const AssignWorkstationHome = () => {
   const [assignedWorkstations, setAssignedWorkstations] = useState([]);
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   useEffect(() => {
     loadAssignedWorkstations();
@@ -31,6 +35,14 @@ const AssignWorkstationHome = () => {
     }
   };
 
+  const count = Math.ceil(assignedWorkstations.length / PER_PAGE);
+  const _DATA = usePagination(assignedWorkstations, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+
   return (
     <div className="container">
       <AssignWorkstationToProductionLine
@@ -49,7 +61,7 @@ const AssignWorkstationHome = () => {
           </tr>
         </thead>
         <tbody>
-          {assignedWorkstations.map((x, index) => (
+          {_DATA.currentData().map((x, index) => (
             <tr key={x.Id}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -75,6 +87,14 @@ const AssignWorkstationHome = () => {
           ))}
         </tbody>
       </table>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        color="primary"
+        onChange={handleChange}
+      />
     </div>
   );
 };

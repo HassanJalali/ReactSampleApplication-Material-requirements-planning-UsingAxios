@@ -52,7 +52,7 @@ const ShowProductionWorksheetDetail = (props) => {
               />
             </div>
           </div>
-          <div className="form-group row mb-3">
+          {/* <div className="form-group row mb-3">
             <label htmlFor="Timestamp" className="col-sm-4 col-form-label">
               زمان ثبت :
             </label>
@@ -72,7 +72,7 @@ const ShowProductionWorksheetDetail = (props) => {
                 }
               />
             </div>
-          </div>
+          </div> */}
           <div className="form-group row mb-3">
             <label htmlFor="ScannerId" className="col-sm-4 col-form-label">
               اسکن کننده :
@@ -92,24 +92,34 @@ const ShowProductionWorksheetDetail = (props) => {
             </div>
           </div>
           <div className="form-group row mb-3">
-            <label htmlFor="IsScan" className="col-sm-4 col-form-label">
-              وضعیت اسکن :
+            <label htmlFor="Scanned" className="col-sm-4 col-form-label">
+              کارتن های اسکن شده :
+            </label>
+            <div className="col-sm-8">
+              <input
+                disabled
+                type="text"
+                className="form-control "
+                id="Scanned"
+                placeholder={productionWorksheetDetail.Scanned}
+              />
+            </div>
+          </div>
+          <div className="form-group row mb-3">
+            <label htmlFor="UnScanned" className="col-sm-4 col-form-label">
+              کارتن های اسکن نشده :
             </label>
             <div className="col-sm-8">
               <input
                 disabled
                 type="text"
                 className="form-control"
-                id="IsScan"
-                placeholder={
-                  productionWorksheetDetail.IsScan === true
-                    ? "اسکن شده است "
-                    : "اسکن نشده است"
-                }
+                id="UnScanned"
+                placeholder={productionWorksheetDetail.UnScanned}
               />
             </div>
           </div>
-          <div className="form-group row mb-3">
+          {/* <div className="form-group row mb-3">
             <label htmlFor="ScanTime" className="col-sm-4 col-form-label">
               زمان اسکن :
             </label>
@@ -128,8 +138,8 @@ const ShowProductionWorksheetDetail = (props) => {
                       ).format("HH:mm:ss - jYYYY/jM/jD")
                 }
               />
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </Modal.Body>
         <Modal.Footer dir={"ltr"}>
           <Button

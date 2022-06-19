@@ -32,7 +32,7 @@ const ProductionWorksheetDetail = (props) => {
     if (numberOfRow === "") {
       return toast.error("تعداد ردیف ها را وارد کنید.");
     }
-    
+
     let params = {
       ProductionWorksheetId: productionHeaderState.ProductionWorksheetId,
       RegistrarId: userId,
@@ -78,13 +78,13 @@ const ProductionWorksheetDetail = (props) => {
               />
             </Form.Group>
             <Form.Group className="mb-4" controlId="exampleForm.ControlInput1">
-              <Form.Label>* تعداد ردیف </Form.Label>
+              <Form.Label>* تعداد کارتن </Form.Label>
               <Form.Control
                 name="numberOfRow"
                 autoComplete="off"
                 value={numberOfRow}
                 type="number"
-                placeholder="تعداد ردیف های مورد نیاز را وارد کنید ."
+                placeholder="تعداد کارتن های مورد نیاز را وارد کنید ."
                 onChange={(e) => onNumberOfRowChange(e)}
               />
             </Form.Group>

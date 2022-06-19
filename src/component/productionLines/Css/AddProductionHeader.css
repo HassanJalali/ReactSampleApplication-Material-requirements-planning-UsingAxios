@@ -6,3 +6,6 @@
 select {
   color: rgb(135, 33, 33) !important;
 }
+.modal-content {
+  width: 110% !important;
+}

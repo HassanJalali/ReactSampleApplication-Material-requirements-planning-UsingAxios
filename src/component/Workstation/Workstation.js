@@ -7,9 +7,13 @@ import moment from "moment-jalaali";
 import { toast } from "react-toastify";
 import AddWorkstation from "./AddWorkstation";
 import { Button } from "react-bootstrap";
+import { Pagination } from "@material-ui/lab";
+import usePagination from "../Pagination/Pagination";
 
 const WorkStation = () => {
   const [workstations, setWorkstations] = useState([]);
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   useEffect(() => {
     loadWorkstations();
@@ -29,6 +33,14 @@ const WorkStation = () => {
     }
   };
 
+  const count = Math.ceil(workstations.length / PER_PAGE);
+  const _DATA = usePagination(workstations, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+
   return (
     <>
       <div className="container">
@@ -44,7 +56,7 @@ const WorkStation = () => {
             </tr>
           </thead>
           <tbody>
-            {workstations.map((x, index) => (
+            {_DATA.currentData().map((x, index) => (
               <tr key={x.WorkstationId}>
                 <th scope="row">{index + 1}</th>
                 <td>{x.WorkstationType}</td>
@@ -66,6 +78,14 @@ const WorkStation = () => {
             ))}
           </tbody>
         </table>
+        <Pagination
+          count={count}
+          size="large"
+          page={page}
+          variant="outlined"
+          color="primary"
+          onChange={handleChange}
+        />
       </div>
     </>
   );

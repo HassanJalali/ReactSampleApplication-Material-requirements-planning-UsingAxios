@@ -9,10 +9,15 @@ import { toast } from "react-toastify";
 import moment from "moment-jalaali";
 import AddProductionline from "../productionLines/AddProductionline";
 import EditProductionLine from "../productionLines/EditProductionLine";
+import { Pagination } from "@material-ui/lab";
+import usePagination from "../Pagination/Pagination";
 import "./Css/Home.css";
+import "../Pagination/Pagination.css";
 
 const Home = () => {
   const [productionLines, setProductionLines] = useState([]);
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   useEffect(() => {
     loadProductionLine();
@@ -39,6 +44,14 @@ const Home = () => {
     }
   };
 
+  const count = Math.ceil(productionLines.length / PER_PAGE);
+  const _DATA = usePagination(productionLines, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
+
   return (
     <div className="container">
       <AddProductionline loadProductionLine={loadProductionLine} />
@@ -55,7 +68,7 @@ const Home = () => {
           </tr>
         </thead>
         <tbody>
-          {productionLines.map((x, index) => (
+          {_DATA.currentData().map((x, index) => (
             <tr key={x.Id}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -100,6 +113,14 @@ const Home = () => {
           ))}
         </tbody>
       </table>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        color="primary"
+        onChange={handleChange}
+      />
     </div>
   );
 };

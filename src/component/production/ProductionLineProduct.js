@@ -10,6 +10,8 @@ import {
   getAssignedProductionsByProductionLineName,
   getAssignedProductionsByProductionName,
 } from "../../services/ProductionLines-Service";
+import { Pagination } from "@material-ui/lab";
+import usePagination from "../Pagination/Pagination";
 import "./Css/ProductionLineProduct.css";
 
 const ProductionLineProduct = () => {
@@ -17,6 +19,8 @@ const ProductionLineProduct = () => {
   const [productionLineName, setProductionLineName] = useState({
     ProductionLineName: "",
   });
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   const [productionName, setProductionName] = useState({
     ProductionName: "",
@@ -89,6 +93,14 @@ const ProductionLineProduct = () => {
       toast.success("محصول تخصیص داده شده با موفقیت از خط تولید حذف شد.");
       loadProductionLine();
     }
+  };
+
+  const count = Math.ceil(productionLines.length / PER_PAGE);
+  const _DATA = usePagination(productionLines, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
   };
 
   return (
@@ -184,7 +196,7 @@ const ProductionLineProduct = () => {
           </tr>
         </thead>
         <tbody>
-          {productionLines.map((x, index) => (
+          {_DATA.currentData().map((x, index) => (
             <tr key={x.ProductionId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductionLineName}</td>
@@ -233,6 +245,14 @@ const ProductionLineProduct = () => {
           ))}
         </tbody>
       </table>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        color="primary"
+        onChange={handleChange}
+      />
     </div>
   );
 };

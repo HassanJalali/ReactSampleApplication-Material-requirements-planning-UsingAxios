@@ -6,11 +6,13 @@
   font-family: "NotoSansArabicSemiBold";
   font-weight: bolder;
 }
-.customeTheme {
+/* .customeTheme {
   color: #ff6e00 !important;
   background-color: green !important;
   color: white !important;
   opacity: 1 !important;
-  width: 500px !important;
-  word-wrap: break-word !important;
-}
+  width: 400px !important;
+  height: 300px !important;
+   word-wrap: break-word !important; */
+/* word-break: break-all !important; */
+/* } */

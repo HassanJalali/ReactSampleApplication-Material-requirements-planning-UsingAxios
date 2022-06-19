@@ -5,10 +5,14 @@ import ProductionWorksheetDetail from "./ProductionWorksheetDetail";
 import AddProductionHeader from "./AddProductionHeader";
 import ShowProductionWorksheetDetail from "./ShowProductionWorksheetDetail";
 import { getProductionWorksheets } from "../../services/ProductionWorksheet-Service";
+import { Pagination } from "@material-ui/lab";
+import usePagination from "../Pagination/Pagination";
 import "./Css/ProductionHeader.css";
 
 const ProductionHeader = () => {
   const [productionHeaders, setProductionHeaders] = useState([]);
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 10;
 
   useEffect(() => {
     LoadProductionHeaders();
@@ -20,6 +24,13 @@ const ProductionHeader = () => {
     setProductionHeaders(result);
   };
 
+  const count = Math.ceil(productionHeaders.length / PER_PAGE);
+  const _DATA = usePagination(productionHeaders, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
   return (
     <div className="container" id="txtTruncet">
       <AddProductionHeader LoadProductionHeaders={LoadProductionHeaders} />
@@ -40,7 +51,7 @@ const ProductionHeader = () => {
           </tr>
         </thead>
         <tbody>
-          {productionHeaders.map((x, index) => (
+          {_DATA.currentData().map((x, index) => (
             <tr key={x.ProductionWorksheetId}>
               <th scope="row">{index + 1}</th>
               <td>{x.ProductId}</td>
@@ -61,11 +72,13 @@ const ProductionHeader = () => {
               >
                 {x.Description === "" ? "ندارد" : x.Description}
                 <ReactTooltip
+                  // style={{ width: "100%", wordBreak: "break-all" }}
                   className="customeTheme"
                   place="top"
                   effect="float"
                 />
               </td>
+
               <td>
                 <ProductionWorksheetDetail
                   {...x}
@@ -77,6 +90,14 @@ const ProductionHeader = () => {
           ))}
         </tbody>
       </table>
+      <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        color="primary"
+        onChange={handleChange}
+      />
     </div>
   );
 };
