@@ -7,13 +7,32 @@ import {
   deleteAssignedWorkstation,
   getAssignedWorkstations,
 } from "../../services/ProductionLines-Service";
-import { Pagination } from "@material-ui/lab";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import createCache from "@emotion/cache";
+import Pagination from "@mui/material/Pagination";
+import { CacheProvider } from "@emotion/react";
 import usePagination from "../Pagination/Pagination";
+import rtlPlugin from "stylis-plugin-rtl";
+import { prefixer } from "stylis";
+
+const themeRtl = createTheme({
+  direction: "rtl", // Both here and <body dir="rtl">
+});
+const themeLtr = createTheme({
+  direction: "ltr", // Both here and <body dir="ltr">
+});
+// Create rtl cache
+const cacheRtl = createCache({
+  key: "muirtl",
+  stylisPlugins: [prefixer, rtlPlugin],
+});
 
 const AssignWorkstationHome = () => {
+  const [direction, setDirection] = useState("rtl");
+  document.body.dir = direction;
   const [assignedWorkstations, setAssignedWorkstations] = useState([]);
   let [page, setPage] = useState(1);
-  const PER_PAGE = 10;
+  const PER_PAGE = 1;
 
   useEffect(() => {
     loadAssignedWorkstations();
@@ -87,14 +106,23 @@ const AssignWorkstationHome = () => {
           ))}
         </tbody>
       </table>
-      <Pagination
-        count={count}
-        size="large"
-        page={page}
-        variant="outlined"
-        color="primary"
-        onChange={handleChange}
-      />
+      <CacheProvider value={cacheRtl}>
+        <ThemeProvider theme={direction === "rtl" ? themeRtl : themeLtr}>
+          <Pagination
+            count={count}
+            variant="outlined"
+            size="large"
+            page={page}
+            defaultPage={0}
+            onChange={handleChange}
+            color="primary"
+            siblingCount={1}
+            showFirstButton
+            showLastButton
+            //boundaryCount={1}
+          />
+        </ThemeProvider>
+      </CacheProvider>
     </div>
   );
 };

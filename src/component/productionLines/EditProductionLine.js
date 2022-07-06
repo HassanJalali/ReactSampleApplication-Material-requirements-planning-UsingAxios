@@ -19,8 +19,6 @@ const EditProductionLine = (props) => {
   });
 
   useEffect(() => {
-    loadProductionLine();
-    getCostCenter();
     setProductionLineState(props);
   }, [props]);
 
@@ -44,7 +42,7 @@ const EditProductionLine = (props) => {
   const onSubmit = async (e) => {
     e.preventDefault();
     if (productionLine.CostCenterName == "") {
-      return toast.error(" .نام مرکز هزینه را انتخاب کنید");
+      return toast.error(" نام مرکز هزینه را انتخاب کنید.");
     }
     const request = await updateProductionLine(
       productionLineState.Id,
@@ -59,7 +57,15 @@ const EditProductionLine = (props) => {
 
   return (
     <>
-      <Button variant="outline-success" className="btn" onClick={handleShow}>
+      <Button
+        variant="outline-success"
+        className="btn"
+        onClick={() => {
+          handleShow();
+          loadProductionLine();
+          getCostCenter();
+        }}
+      >
         ویرایش
       </Button>
 

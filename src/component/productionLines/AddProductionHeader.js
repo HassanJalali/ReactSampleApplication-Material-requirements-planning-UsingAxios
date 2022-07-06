@@ -1,5 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { getCurrentUser } from "../../services/AuthService";
+import jwtDecode from "jwt-decode";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
   getActiveAssignedProductionByProductionLineId,
@@ -10,19 +12,22 @@ import { createProductionWorksheet } from "../../services/ProductionWorksheet-Se
 import "./Css/AddProductionHeader.css";
 
 const AddProductionHeader = (props) => {
+  const [userId, SetUserId] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setProductionLineId("");
     SetProductionCode("");
     setProductionCostId("");
-    SetUser("");
     Setdescription("");
     setShow(true);
   };
 
   useEffect(() => {
-    loadProductionLine();
+    // loadProductionLine();
+    const jwt = getCurrentUser();
+    const user = jwtDecode(jwt).name;
+    SetUserId(user);
   }, []);
 
   const [productionLineName, SetProductionLineName] = useState([]);
@@ -65,9 +70,8 @@ const AddProductionHeader = (props) => {
     setProductionCostId(e.target.value);
   };
 
-  const [userId, SetUser] = useState("");
   const onUserIdChange = (e) => {
-    SetUser(e.target.value);
+    SetUserId(e.target.value);
   };
 
   const [description, Setdescription] = useState("");
@@ -109,7 +113,14 @@ const AddProductionHeader = (props) => {
 
   return (
     <>
-      <Button className="btn mt-3 px-4 py-2" id="addbtn" onClick={handleShow}>
+      <Button
+        className="btn mt-3 px-4 py-2"
+        id="addbtn"
+        onClick={() => {
+          handleShow();
+          loadProductionLine();
+        }}
+      >
         ایجاد سربرگ محصول
       </Button>
 
@@ -175,12 +186,13 @@ const AddProductionHeader = (props) => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* ثبات </Form.Label>
               <Form.Control
+                disabled
                 name="userId"
                 autoComplete="off"
                 value={userId}
                 onChange={(e) => onUserIdChange(e)}
-                type="number"
-                placeholder="کد پرسنلی را وارد کنید ."
+                type="text"
+                placeholder={userId}
                 onInput={(e) => (e.target.value = e.target.value.slice(0, 7))}
               />
             </Form.Group>

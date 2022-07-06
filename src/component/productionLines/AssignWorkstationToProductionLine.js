@@ -26,10 +26,10 @@ const AssignWorkstationToProductionLine = (props) => {
     setShow(true);
   };
 
-  useEffect(() => {
-    loadProductionLine();
-    loadWorkstationTypes();
-  }, []);
+  // useEffect(() => {
+  //   loadProductionLine();
+  //   loadWorkstationTypes();
+  // }, []);
 
   const loadProductionLine = async () => {
     const request = await getProductionLineName();
@@ -42,7 +42,7 @@ const AssignWorkstationToProductionLine = (props) => {
     const result = request.data;
     setWorkstationTypes(result);
   };
-
+  // .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
   const { ProductionLineId, WorkstationTypeId, workstationOrder } =
     assignWorkstation;
   const onInputChange = (e) => {
@@ -73,7 +73,15 @@ const AssignWorkstationToProductionLine = (props) => {
 
   return (
     <>
-      <Button id="addbtn" className="btn mt-3 px-4 py-2" onClick={handleShow}>
+      <Button
+        id="addbtn"
+        className="btn mt-3 px-4 py-2"
+        onClick={() => {
+          handleShow();
+          loadProductionLine();
+          loadWorkstationTypes();
+        }}
+      >
         تخصیص ایستگاه کاری به خط تولید
       </Button>
 
@@ -134,7 +142,9 @@ const AssignWorkstationToProductionLine = (props) => {
                   className="form-control form-control-md"
                   placeholder="ترتیب ایستگاه کاری را وارد کنید."
                   name="workstationOrder"
-                  value={workstationOrder}
+                  value={workstationOrder
+                    .replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+                    .replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))}
                   onChange={(e) => onInputChange(e)}
                 />
               </div>

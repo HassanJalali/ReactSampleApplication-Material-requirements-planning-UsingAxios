@@ -23,7 +23,6 @@ const AssignProductionCost = (props) => {
 
   useEffect(() => {
     setProductionLineProductState(props);
-    LoadProductionCost();
   }, [props]);
 
   const LoadProductionCost = async () => {
@@ -61,7 +60,13 @@ const AssignProductionCost = (props) => {
 
   return (
     <>
-      <Button variant="outline-success" onClick={handleShow}>
+      <Button
+        variant="outline-success"
+        onClick={() => {
+          handleShow();
+          LoadProductionCost();
+        }}
+      >
         تخصیص شناسه محصول
       </Button>
 

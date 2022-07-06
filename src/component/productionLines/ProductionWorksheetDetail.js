@@ -5,16 +5,17 @@ import { createProductionWorksheetDetail } from "../../services/ProductionWorksh
 
 const ProductionWorksheetDetail = (props) => {
   const [productionHeaderState, setProductionHeaderState] = useState(props);
+  const [userId, setUserId] = useState("");
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   useEffect(() => {
+    setUserId(productionHeaderState.UserId);
     setProductionHeaderState(props);
   }, [props]);
 
-  const [userId, setUserId] = useState("");
   const onUserIdChange = async (e) => {
     setUserId(e.target.value);
   };
@@ -26,9 +27,7 @@ const ProductionWorksheetDetail = (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (userId === "") {
-      return toast.error("کد پرسنلی را وارد کنید.");
-    }
+
     if (numberOfRow === "") {
       return toast.error("تعداد ردیف ها را وارد کنید.");
     }
@@ -66,13 +65,11 @@ const ProductionWorksheetDetail = (props) => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* ثبات </Form.Label>
+              <Form.Label> ثبات </Form.Label>
               <Form.Control
                 name="userId"
-                autoComplete="off"
-                type="number"
-                placeholder="کد پرسنلی را وارد کنید ."
-                onInput={(e) => (e.target.value = e.target.value.slice(0, 7))}
+                disabled
+                type="text"
                 value={userId}
                 onChange={(e) => onUserIdChange(e)}
               />

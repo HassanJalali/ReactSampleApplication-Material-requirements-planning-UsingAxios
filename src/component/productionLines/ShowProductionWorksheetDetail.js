@@ -13,7 +13,7 @@ const ShowProductionWorksheetDetail = (props) => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    loadProductionWorksheetDetail();
+    //loadProductionWorksheetDetail();
     setProductionHeaderState(props);
   }, [props]);
 
@@ -30,7 +30,10 @@ const ShowProductionWorksheetDetail = (props) => {
       <Button
         variant="outline-success"
         className="btn  mx-2 px-3"
-        onClick={handleShow}
+        onClick={() => {
+          handleShow();
+          loadProductionWorksheetDetail();
+        }}
         disabled={productionHeaderState.HasDetails === false}
       >
         مشاهده جزئیات
@@ -52,27 +55,6 @@ const ShowProductionWorksheetDetail = (props) => {
               />
             </div>
           </div>
-          {/* <div className="form-group row mb-3">
-            <label htmlFor="Timestamp" className="col-sm-4 col-form-label">
-              زمان ثبت :
-            </label>
-            <div className="col-sm-8">
-              <input
-                disabled
-                type="text"
-                className="form-control"
-                id="Timestamp"
-                placeholder={
-                  productionWorksheetDetail.Timestamp === null
-                    ? "  ندارد "
-                    : moment(
-                        productionWorksheetDetail.Timestamp,
-                        "YYYY-M-D HH:mm:ss"
-                      ).format("HH:mm:ss - jYYYY/jM/jD")
-                }
-              />
-            </div>
-          </div> */}
           <div className="form-group row mb-3">
             <label htmlFor="ScannerId" className="col-sm-4 col-form-label">
               اسکن کننده :
@@ -119,27 +101,6 @@ const ShowProductionWorksheetDetail = (props) => {
               />
             </div>
           </div>
-          {/* <div className="form-group row mb-3">
-            <label htmlFor="ScanTime" className="col-sm-4 col-form-label">
-              زمان اسکن :
-            </label>
-            <div className="col-sm-8">
-              <input
-                disabled
-                type="text"
-                className="form-control"
-                id="ScanTime"
-                placeholder={
-                  productionWorksheetDetail.ScanTime === null
-                    ? "  ندارد "
-                    : moment(
-                        productionWorksheetDetail.ScanTime,
-                        "YYYY-M-D HH:mm:ss"
-                      ).format("HH:mm:ss - jYYYY/jM/jD")
-                }
-              />
-            </div> */}
-          {/* </div> */}
         </Modal.Body>
         <Modal.Footer dir={"ltr"}>
           <Button

@@ -22,10 +22,6 @@ const AddProductionline = (props) => {
 
   const [costCenters, setCostCenters] = useState([]);
 
-  useEffect(() => {
-    getCostCenter();
-  }, []);
-
   const getCostCenter = async () => {
     const request = await getCostCentersCode();
     const result = request.data.Result;
@@ -56,7 +52,14 @@ const AddProductionline = (props) => {
 
   return (
     <>
-      <Button id="addbtn" className="btn mt-3 px-4 py-2" onClick={handleShow}>
+      <Button
+        id="addbtn"
+        className="btn mt-3 px-4 py-2"
+        onClick={() => {
+          handleShow();
+          getCostCenter();
+        }}
+      >
         ایجاد خط تولید
       </Button>
 

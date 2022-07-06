@@ -29,9 +29,9 @@ const AssignProductToProductionLine = (props) => {
     setShow(true);
   };
 
-  useEffect(() => {
-    loadProductionLines();
-  }, []);
+  // useEffect(() => {
+  //   loadProductionLines();
+  // }, []);
 
   const loadProductionLines = async () => {
     const request = await getProductionLineName();
@@ -95,7 +95,14 @@ const AssignProductToProductionLine = (props) => {
 
   return (
     <>
-      <Button className="btn mt-3 px-4 py-2" id="addbtn" onClick={handleShow}>
+      <Button
+        className="btn mt-3 px-4 py-2"
+        id="addbtn"
+        onClick={() => {
+          handleShow();
+          loadProductionLines();
+        }}
+      >
         تخصیص محصول به خط تولید
       </Button>
 
@@ -123,7 +130,7 @@ const AssignProductToProductionLine = (props) => {
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>* مرکز هرینه </Form.Label>
               <Form.Control
-                type="number"
+                type="text"
                 className="form-control form-control-md"
                 placeholder="کد محصول ۹ رقمی را وارد کنید."
                 name="ProductionCode"
