@@ -74,7 +74,7 @@ const AssignProductionCost = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* خط تولید </Form.Label>
+              <Form.Label> خط تولید </Form.Label>
               <Form.Control
                 disabled
                 type="text"
@@ -84,7 +84,7 @@ const AssignProductionCost = (props) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* محصول </Form.Label>
+              <Form.Label> محصول </Form.Label>
               <Form.Control
                 type="text"
                 disabled

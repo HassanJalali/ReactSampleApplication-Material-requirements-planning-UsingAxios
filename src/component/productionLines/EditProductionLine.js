@@ -1,5 +1,5 @@
-import { React, useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { React, useState, useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   getProductionLineById,
@@ -73,10 +73,10 @@ const EditProductionLine = (props) => {
         <Form onSubmit={(e) => onSubmit(e)}>
           <Modal.Body>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* خط تولید </Form.Label>
+              <Form.Label> خط تولید </Form.Label>
               <Form.Control
                 name="ProductionLineName"
-                value={ProductionLineName}
+                value={ProductionLineName || ""}
                 onChange={(e) => onInputChange(e)}
                 type="text"
                 disabled
@@ -93,7 +93,7 @@ const EditProductionLine = (props) => {
                 type="text"
                 placeholder="نام مرکز هزینه را وارد کنید."
                 name="CostCenterName"
-                value={CostCenterName}
+                value={CostCenterName || ""}
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
               />

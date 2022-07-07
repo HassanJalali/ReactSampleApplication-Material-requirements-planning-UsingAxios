@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 import {
   AssignProductionToProductionLine,
@@ -29,10 +29,6 @@ const AssignProductToProductionLine = (props) => {
     setShow(true);
   };
 
-  // useEffect(() => {
-  //   loadProductionLines();
-  // }, []);
-
   const loadProductionLines = async () => {
     const request = await getProductionLineName();
     const result = request.data;
@@ -50,6 +46,12 @@ const AssignProductToProductionLine = (props) => {
         feedback: "invalid-feedback",
         cssClass: "is-invalid",
       });
+      setTimeout(() => {
+        SetAssignProductToProductionline({
+          ProductionName: "",
+          ProductionLineId: ProductionLineId,
+        });
+      }, 3000);
     } else {
       SetAssignProductToProductionline({
         ProductionName: `${result.Name}`,
@@ -115,7 +117,7 @@ const AssignProductToProductionLine = (props) => {
                 className="form-control form-control-md mb-2 "
                 type="text"
                 name="ProductionLineId"
-                value={ProductionLineId}
+                value={ProductionLineId || ""}
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
               >
@@ -134,7 +136,7 @@ const AssignProductToProductionLine = (props) => {
                 className="form-control form-control-md"
                 placeholder="کد محصول ۹ رقمی را وارد کنید."
                 name="ProductionCode"
-                value={ProductionCode}
+                value={ProductionCode || ""}
                 onChange={(e) => onInputChange(e)}
                 autoComplete="off"
                 onInput={(e) => (e.target.value = e.target.value.slice(0, 9))}
@@ -156,7 +158,7 @@ const AssignProductToProductionLine = (props) => {
                 <span
                   className={`form-control ${assignProductToProductionline.cssClass}`}
                   name="ProductionName"
-                  value={ProductionName}
+                  value={ProductionName || ""}
                   placeholder={ProductionName}
                   onChange={(e) => onInputChange(e)}
                 >

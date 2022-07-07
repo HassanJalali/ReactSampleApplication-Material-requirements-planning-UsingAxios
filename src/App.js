@@ -98,8 +98,6 @@ export default function App() {
                 element={<ProductionHeader />}
               ></Route>
               <Route path="*" element={<Navigate to="/" replace />}></Route>
-              {/* <Route path="*" element={<PageNotFound />} /> */}
-              {/* <Route path="*" element={<Home />} /> */}
             </React.Fragment>
           )}
         </Routes>

@@ -1,8 +1,7 @@
+import { toast } from "react-toastify";
 import React, { useState } from "react";
 import { login } from "../../services/AuthService";
-import { toast } from "react-toastify";
-import { Button } from "react-bootstrap";
-import "./LoginForm.css";
+import "./css/LoginForm.css";
 
 const LoginForm = () => {
   const [employeeCode, setEmployeeCode] = useState("");
@@ -35,14 +34,20 @@ const LoginForm = () => {
     toast.loading("در حال بارگذاری ...");
     setTimeout(() => {
       window.location = "/";
-    }, 5000);
+    }, 3000);
   };
   return (
     <div>
+      {/* <div className="text-center">
+        <a href="/login">
+          <img src={require("./css/logo.png")} className="brandlogo" />
+        </a>
+        <h2> برنامه ریزی تولید شونیز </h2>
+      </div> */}
       <form onSubmit={(e) => onSubmit(e)}>
         <div className="login text-center">
           <div className="form">
-            <h2>سیستم برنامه ریزی تولید</h2>
+            <h2> صفحه ورود </h2>
             <div className="form-field">
               <label htmlFor="login-mail">
                 <i className="fa fa-user" />

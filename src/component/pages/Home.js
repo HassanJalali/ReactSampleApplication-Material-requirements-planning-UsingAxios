@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import {
-  getProductionLines,
-  deleteProductionLine,
-  activeProductionline,
-} from "../../services/ProductionLines-Service";
-import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import moment from "moment-jalaali";
-import AddProductionline from "../productionLines/AddProductionline";
-import EditProductionLine from "../productionLines/EditProductionLine";
-import usePagination from "../Pagination/Pagination";
-import "./Css/Home.css";
-import "../Pagination/Pagination.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import createCache from "@emotion/cache";
 import Pagination from "@mui/material/Pagination";
 import { CacheProvider } from "@emotion/react";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
+import React, { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
+import {
+  getProductionLines,
+  deleteProductionLine,
+  activeProductionline,
+} from "../../services/ProductionLines-Service";
+import AddProductionline from "../productionLines/AddProductionline";
+import EditProductionLine from "../productionLines/EditProductionLine";
+import usePagination from "../Pagination/Pagination";
+import "../Pagination/Css/Pagination.css";
+import "./Css/Home.css";
 
 const themeRtl = createTheme({
   direction: "rtl", // Both here and <body dir="rtl">
@@ -145,7 +145,6 @@ const Home = () => {
             siblingCount={1}
             showFirstButton
             showLastButton
-            //boundaryCount={1}
           />
         </ThemeProvider>
       </CacheProvider>

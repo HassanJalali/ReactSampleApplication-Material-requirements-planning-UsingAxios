@@ -1,22 +1,6 @@
-/* .navbar {
-  background-color: #1a1a27 !important;
-  height: 60px !important;
-}
-.nav-link {
-  font-size: 17px !important;
-  font-weight: 100 !important;
-}
-.nav-link:hover {
-  color: #c1c4d6 !important;
-}
-.navbar-brand {
-  margin-top: 3px;
-} */
-
 .navbar {
   background-color: #1a1a27 !important;
   height: 100px !important;
-  /* background-color: #484848; */
 }
 .navbar .navbar-nav .nav-link {
   color: #fff;

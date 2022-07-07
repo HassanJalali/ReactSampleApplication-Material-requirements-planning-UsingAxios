@@ -1,6 +1,5 @@
 import { React, useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
-import moment from "moment-jalaali";
 import { getProductionWorksheetDetailByProductionWorksheetId } from "../../services/ProductionWorksheet-Service";
 
 const ShowProductionWorksheetDetail = (props) => {

@@ -1,7 +1,7 @@
-import { React, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getCurrentUser } from "../../services/AuthService";
 import jwtDecode from "jwt-decode";
+import { React, useEffect, useState } from "react";
+import { getCurrentUser } from "../../services/AuthService";
 import { Modal, Button, Form } from "react-bootstrap";
 import {
   getActiveAssignedProductionByProductionLineId,
@@ -17,14 +17,13 @@ const AddProductionHeader = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setProductionLineId("");
-    SetProductionCode("");
-    setProductionCostId("");
+    SetProductionName("");
+    SetProductionCost("");
     Setdescription("");
     setShow(true);
   };
 
   useEffect(() => {
-    // loadProductionLine();
     const jwt = getCurrentUser();
     const user = jwtDecode(jwt).name;
     SetUserId(user);
@@ -43,7 +42,7 @@ const AddProductionHeader = (props) => {
   const onProductionLineChange = async (e) => {
     setProductionLineId(e.target.value);
     SetProductionCode("");
-    setProductionCostId("");
+    SetProductionCost("");
 
     const request = await getActiveAssignedProductionByProductionLineId(
       e.target.value
@@ -140,11 +139,15 @@ const AddProductionHeader = (props) => {
                 <option id="setdefaultcolor" hidden>
                   نام خط تولید را انتخاب کنید.
                 </option>
-                {productionLineName.map((cs) => (
-                  <option key={cs.Id} value={cs.Id}>
-                    {cs.ProductionLineName}
-                  </option>
-                ))}
+                {productionLineName.length > 0 ? (
+                  productionLineName.map((cs) => (
+                    <option key={cs.Id} value={cs.Id}>
+                      {cs.ProductionLineName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>هیچ گونه خط تولیدی تعریف نشده است.</option>
+                )}
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -159,11 +162,17 @@ const AddProductionHeader = (props) => {
               >
                 <option hidden>نام محصول را انتخاب کنید.</option>
 
-                {productionName.map((cs) => (
-                  <option key={cs.ProductionCode} value={cs.ProductionCode}>
-                    {cs.ProductionName}
+                {productionName.length > 0 ? (
+                  productionName.map((cs) => (
+                    <option key={cs.ProductionCode} value={cs.ProductionCode}>
+                      {cs.ProductionName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>
+                    به خط تولید انتخاب شده محصولی اختصاص داده نشده است.
                   </option>
-                ))}
+                )}
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -177,14 +186,20 @@ const AddProductionHeader = (props) => {
                 autoComplete="off"
               >
                 <option hidden> شناسه محصول را انتخاب کنید.</option>
-                <option value={productionCost.ProductionCostId}>
-                  شناسه محصول : {productionCost.ProductionCostId}| قیمت محصول :
-                  {productionCost.ProductionCost}
-                </option>
+                {productionCost.ProductionCostId === 0 ? (
+                  <option disabled>
+                    به محصول انتخاب شده شناسه محصولی اختصاص داده نشده است.
+                  </option>
+                ) : (
+                  <option value={productionCost.ProductionCostId}>
+                    شناسه محصول : {productionCost.ProductionCostId}| قیمت محصول
+                    :{productionCost.ProductionCost}
+                  </option>
+                )}
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>* ثبات </Form.Label>
+              <Form.Label> ثبات </Form.Label>
               <Form.Control
                 disabled
                 name="userId"

@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
 import jwtDecode from "jwt-decode";
-import { getCurrentUser, logout } from "../../services/AuthService";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import ReactTooltip from "react-tooltip";
+import { getCurrentUser, logout } from "../../services/AuthService";
 import "./Css/Navbar.css";
-import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [userData, setUserData] = useState(null);
@@ -21,34 +19,20 @@ const Navbar = () => {
 
   const logOut = () => {
     logout();
-    // toast.success("شما با موفقیت از برنامه خارج شدید.");
     window.location.replace("login");
-    // setTimeout(() => {}, 4000);
   };
   return (
     <div>
       <header>
         <nav className="navbar navbar-expand-lg">
           <div className="container ">
-            <NavLink className="navbar-brand" to="/">
-              <img
-                src="http://shonizit:1000/wp-content/uploads/2016/11/photo_2016-11-10_09-25-58-300x300.png"
-                style={{ height: 100 }}
-              />
+            <NavLink className="navbar-brand" to="#">
+              <img src={require("./Css/logo.png")} style={{ height: 100 }} />
             </NavLink>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#nvbCollapse"
-              aria-controls="nvbCollapse"
-            >
-              <span className="navbar-toggler-icon" />
-            </button>
-            <div className="collapse navbar-collapse" id="nvbCollapse">
-              <ul className="navbar-nav ml-auto">
-                <li className="nav-item pl-1">
-                  <NavLink className="nav-link" to="/">
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav ml-auto ">
+                <li className="nav-item pl-1 ">
+                  <NavLink className="nav-link " to="/">
                     خط تولید
                   </NavLink>
                 </li>
@@ -75,12 +59,12 @@ const Navbar = () => {
               </ul>
             </div>
             <div className="d-flex justify-content-around">
-              <div className="collapse navbar-collapse " id="nvbCollapse">
+              <div className="collapse navbar-collapse " id="navbarNav">
                 <ul className="navbar-nav ml-auto">
                   {userData && (
                     <React.Fragment>
                       <li className="nav-item pl-1">
-                        <NavLink className="nav-link" to="/">
+                        <NavLink className="nav-link" to="#">
                           {userData.name}
                         </NavLink>
                       </li>
@@ -104,9 +88,6 @@ const Navbar = () => {
                       </li>
                     </React.Fragment>
                   )}
-                  {/* <li className="nav-item pl-1">
-                  
-                </li> */}
                 </ul>
               </div>
             </div>
