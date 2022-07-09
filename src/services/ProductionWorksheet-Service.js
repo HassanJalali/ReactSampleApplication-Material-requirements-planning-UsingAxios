@@ -7,6 +7,10 @@ export function getProductionWorksheets() {
   return http.get(`${apiEndpoint}/GetProductionWorksheets`);
 }
 
+export function getUnscannedProduction() {
+  return http.get(`${apiEndpoint}/GetUnscannedProduction`);
+}
+
 export function getProductionWorksheetDetailByProductionWorksheetId(id) {
   return http.get(
     `${apiEndpoint}/GetProductionWorksheetDetailByProductionWorksheetId/${id}`

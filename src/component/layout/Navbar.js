@@ -51,9 +51,16 @@ const Navbar = () => {
                     ایستگاه کاری خطوط تولید
                   </NavLink>
                 </li>
+
                 <li className="nav-item pl-1">
                   <NavLink className="nav-link" to="productionheader">
                     سربرگ محصول
+                  </NavLink>
+                </li>
+
+                <li className="nav-item pl-1">
+                  <NavLink className="nav-link" to="print">
+                    سربرگ های اسکن نشده
                   </NavLink>
                 </li>
               </ul>

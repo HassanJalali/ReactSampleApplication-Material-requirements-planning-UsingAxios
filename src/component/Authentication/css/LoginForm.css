@@ -21,9 +21,19 @@
   z-index: 5;
   transition: all 0.6s ease-in-out, background 0s ease;
 }
+.loginHeader {
+  padding-bottom: 10px;
+}
+.loginHeader h3 {
+  color: #7c7fa1;
+}
+/* .loginHeader img {
+  height: 100px;
+} */
 .login .form {
   display: block;
   position: relative;
+  background: #f5f5fa;
 }
 .login .form h2 {
   background: #f5f5fa;

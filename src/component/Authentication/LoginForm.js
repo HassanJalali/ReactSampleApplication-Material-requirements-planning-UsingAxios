@@ -38,16 +38,19 @@ const LoginForm = () => {
   };
   return (
     <div>
-      {/* <div className="text-center">
-        <a href="/login">
-          <img src={require("./css/logo.png")} className="brandlogo" />
-        </a>
-        <h2> برنامه ریزی تولید شونیز </h2>
-      </div> */}
       <form onSubmit={(e) => onSubmit(e)}>
         <div className="login text-center">
           <div className="form">
-            <h2> صفحه ورود </h2>
+            <div className="text-center loginHeader">
+              <a href="/login">
+                <img
+                  src={require("./css/logo.png")}
+                  style={{ height: "90px" }}
+                />
+              </a>
+              <h3> برنامه ریزی تولید شونیز </h3>
+            </div>
+
             <div className="form-field">
               <label htmlFor="login-mail">
                 <i className="fa fa-user" />

@@ -23,6 +23,8 @@ import AssignProductionCost from "./component/productionLines/AssignProductionCo
 import LoginForm from "./component/Authentication/LoginForm";
 import { getCurrentUser } from "./services/AuthService";
 import React from "react";
+import UnscannedProductionHeader from "./component/productionLines/UnscannedProductionHeader";
+import PrintComponent from "./component/productionLines/PrintComponent";
 
 export default function App() {
   render(
@@ -92,6 +94,11 @@ export default function App() {
                 path="/assignproductioncost"
                 element={<AssignProductionCost />}
               ></Route>
+              <Route
+                path="/unscannedproductionheader"
+                element={<UnscannedProductionHeader />}
+              ></Route>
+              <Route path="/print" element={<PrintComponent />}></Route>
 
               <Route
                 path="/productionheader"
