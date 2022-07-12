@@ -2,8 +2,18 @@
   background-color: #1a1a27 !important;
   height: 100px !important;
 }
-.navbar .navbar-nav .nav-link {
+.navbar .navbar-nav .nav-link:link {
+  color: #cdac66;
+}
+
+.navbar .navbar-nav .nav-link:visited {
   color: #fff;
+}
+.navbar .navbar-nav .nav-link.current:link {
+  color: #cdac66;
+}
+.navbar .navbar-nav .nav-link.current:visited {
+  color: #cdac66;
 }
 .navbar .navbar-nav .nav-link:hover {
   color: #cdac66;

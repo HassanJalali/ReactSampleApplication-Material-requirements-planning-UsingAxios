@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import QRCode from "react-qr-code";
-import ReactToPrint from "react-to-print";
-import { Table } from "react-bootstrap";
+import ScrollBars from "react-scrollbar";
 import { getUnscannedProduction } from "../../services/ProductionWorksheet-Service";
-import "./Css/UnscannedProductionHeader.css";
+import "./Css/UnscannedProductionHeader.scss";
+
+const scrollBarStyle = {
+  width: "100%",
+  height: "750px",
+};
 
 const UnscannedProductionHeader = React.forwardRef((props, ref) => {
   const [value, setValue] = useState();
@@ -24,31 +28,39 @@ const UnscannedProductionHeader = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <div className="container" ref={ref}>
-        <table
-          className="table table-bordered mt-3 table-hover text-center "
-          id="collapse1"
+      <div className="container " ref={ref}>
+        <ScrollBars
+          horizontal
+          autoHide={false}
+          style={scrollBarStyle}
+          className="mt-1"
         >
-          <thead>
-            <tr>
-              <th scope="row">سربرگ های اسکن نشده</th>
-            </tr>
-          </thead>
-          <tbody>
-            {unScannedProduction.map((x) => (
-              <tr key={x.ProductionWorksheetId}>
-                <td scope="row">
-                  <QRCode
-                    value={x.ProductionWorksheetId}
-                    bgColor={back}
-                    fgColor={fore}
-                    size={size === "" ? 0 : size}
-                  />
-                </td>
+          <table
+            className="table table-bordered mt-3 table-hover text-center "
+            id="collapse1"
+          >
+            <thead>
+              <tr>
+                <th scope="row">سربرگ های اسکن نشده</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {unScannedProduction.map((x) => (
+                <tr key={x.ProductionWorksheetId}>
+                  <td scope="row">
+                    <QRCode
+                      value={x.ProductionWorksheetId}
+                      bgColor={back}
+                      fgColor={fore}
+                      size={size === "" ? 0 : size}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </ScrollBars>
       </div>
     </>
   );

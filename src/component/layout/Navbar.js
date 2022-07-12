@@ -32,7 +32,7 @@ const Navbar = () => {
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav ml-auto ">
                 <li className="nav-item pl-1 ">
-                  <NavLink className="nav-link " to="/">
+                  <NavLink className="nav-link current " to="/">
                     خط تولید
                   </NavLink>
                 </li>
